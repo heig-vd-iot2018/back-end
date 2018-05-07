@@ -12,7 +12,7 @@ npm install -g swagger
 
 ### Add a .env file
 
-In order to run the project locally and connect to the database running in a Docker container, you will have to create a `.env` file in this folder and copy the content of the [`.env_example](./.env_example) file in it. Adjust the DB_ADRESS if needed for it to work with your Docker installation. 
+In order to run the project locally and connect to the database running in a Docker container, you will have to create a `.env` file in this folder and copy the content of the [`.env_example`](./.env_example) file in it. Adjust the DB_ADRESS if needed for it to work with your Docker installation. 
 
 ## Run the project in development mode
 
