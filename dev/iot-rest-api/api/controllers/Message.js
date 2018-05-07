@@ -11,6 +11,15 @@
   It is a good idea to list the modules that your application depends on in the package.json in the project root
  */
 var util = require('util');
+var mongoose = require('mongoose');
+
+
+/* Message schema */
+var messageSchema = mongoose.Schema({
+	message: String,
+	name: String
+});
+var Message = mongoose.model('Message', messageSchema);
 
 /*
  Once you 'require' a module you can reference the things that it exports.  These are defined in module.exports.
@@ -25,7 +34,8 @@ var util = require('util');
   we specify that in the exports of this module that 'hello' maps to the function named 'hello'
  */
 module.exports = {
-  hello: hello
+  getMessage,
+	postMessage
 };
 
 /*
@@ -34,11 +44,41 @@ module.exports = {
   Param 1: a handle to the request object
   Param 2: a handle to the response object
  */
-function hello(req, res) {
+function getMessage(req, res) {
   // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
-  var name = req.swagger.params.name.value || 'stranger';
-  var hello = util.format('Hello, %s!', name);
+  var name = req.swagger.params.name.value;
 
-  // this sends back a JSON response which is a single string
-  res.json(hello);
+	mongoose.connect('mongodb://localhost:27017/test');
+	var db = mongoose.connection;
+	db.on('error', console.error.bind(console, 'connection error:'));
+	db.once('open', function() {
+		var query  = Message.where({ name: name });
+		query.findOne(function (err, message) {
+			if (err) return handleError(err);
+			if (message) {
+			  res.json({message:message.message, name:message.name});
+			} else {
+				res.status(404).json({message: 'Not found.'})
+			}
+		});
+	});
+}
+
+function postMessage(req, res) {
+
+	const requestMessage = req.body;
+
+	mongoose.connect('mongodb://localhost:27017/test');
+	var db = mongoose.connection;
+	db.on('error', console.error.bind(console, 'connection error:'));
+	db.once('open', function() {
+
+		var m = new Message({ message:  requestMessage.message, name: requestMessage.name });
+		m.save(function (err, message) {
+	    if (err) return console.error(err);
+
+		  // this sends back a JSON response which is a single string
+		  res.status(201).end();
+	  });
+	});
 }
