@@ -12,11 +12,11 @@ npm install -g swagger
 
 ### Add a .env file
 
-In order to run the project locally and connect to the database running in a Docker container, you will have to create a `.env` file in this folder and copy the content of the [`.env_example`](./.env_example) file in it. Adjust the DB_ADRESS if needed for it to work with your Docker installation. 
+In order to run the project locally and connect to the database running in a Docker container, you will have to create a `.env` file in this folder and copy the content of the [`.env_example`](./.env_example) file in it. Adjust the `DB_ADDRESS` variable if needed for it to work with your Docker installation. 
 
 ## Run the project in development mode
 
-To run the project in development mode, you can use one of the following commands in a terminal (the second one, "mock mode" is useful to test the API in the Swagger editor without having to implement the REST API controllers).
+To run the project in development mode, you can use one of the following commands in a terminal (the second one - "mock mode" - is useful to test the API in the Swagger editor without having to implement the REST API controllers).
 
 ```
 swagger project start
@@ -34,3 +34,5 @@ In another terminal, you can now run this command to open the Swagger editor in 
 ```
 swagger project edit
 ```
+
+The REST API is available on the port 10010 on `localhost:10010`
