@@ -21,6 +21,9 @@ var messageSchema = mongoose.Schema({
 });
 var Message = mongoose.model('Message', messageSchema);
 
+const DB_ADDRESS = process.env.DB_ADDRESS;
+const DB_PORT = process.env.DB_PORT;
+
 /*
  Once you 'require' a module you can reference the things that it exports.  These are defined in module.exports.
 
@@ -48,7 +51,7 @@ function getMessage(req, res) {
   // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
   var name = req.swagger.params.name.value;
 
-	mongoose.connect('mongodb://localhost:27017/test');
+	mongoose.connect('mongodb://' + DB_ADDRESS + ':' + DB_PORT + '/test');
 	var db = mongoose.connection;
 	db.on('error', console.error.bind(console, 'connection error:'));
 	db.once('open', function() {
@@ -68,7 +71,7 @@ function postMessage(req, res) {
 
 	const requestMessage = req.body;
 
-	mongoose.connect('mongodb://localhost:27017/test');
+	mongoose.connect('mongodb://' + DB_ADDRESS + ':' + DB_PORT + '/test');
 	var db = mongoose.connection;
 	db.on('error', console.error.bind(console, 'connection error:'));
 	db.once('open', function() {

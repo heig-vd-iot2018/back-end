@@ -1,5 +1,6 @@
 'use strict';
 
+require('dotenv').load();
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
 module.exports = app; // for testing
