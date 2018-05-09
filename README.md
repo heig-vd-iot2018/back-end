@@ -1,14 +1,17 @@
-# IOT-Backend
+# Internet of Things - Groupe back-end
+Dans le cadre du cours IOT à la HEIG-VD, Suisse.
 
-## Tech utilisée : 
+## Introduction
+[Introduction à ce repository]
+Par exemple: Ce repository est consacré à la partie...
+
+## Technologies utilisées
 * NodeJS
 * Swagger
 * MongoDB
 
-## Documenation : 
-* https://www.thethingsnetwork.org/docs/applications/
-
-## Endpoints
+## Spécificités
+### Endpoints
 1. POST - Endpoint pour les capteurs
     * Chaque capteur pousse ses données brutes
     * Décryptage des données?
@@ -21,3 +24,12 @@
 
 4. POST - Modification des fréquences d'un capteur
 
+### Documentation : 
+* https://www.thethingsnetwork.org/docs/applications/
+
+
+## Déploiement
+[Instruction de déploiement/utilisation]
+
+## Conclusion
+[Points à améliorer, points en suspens, améliorations futures, ...]
