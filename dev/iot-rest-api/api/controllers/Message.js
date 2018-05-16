@@ -11,18 +11,7 @@
   It is a good idea to list the modules that your application depends on in the package.json in the project root
  */
 var util = require('util');
-var mongoose = require('mongoose');
-
-
-/* Message schema */
-var messageSchema = mongoose.Schema({
-	message: String,
-	name: String
-});
-var Message = mongoose.model('Message', messageSchema);
-
-const DB_ADDRESS = process.env.DB_ADDRESS;
-const DB_PORT = process.env.DB_PORT;
+const database = require('../dao/database');
 
 /*
  Once you 'require' a module you can reference the things that it exports.  These are defined in module.exports.
@@ -48,40 +37,25 @@ module.exports = {
   Param 2: a handle to the response object
  */
 function getMessage(req, res) {
-  // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
-  var name = req.swagger.params.name.value;
+  const name = req.swagger.params.name.value;
 
-	mongoose.connect('mongodb://' + DB_ADDRESS + ':' + DB_PORT + '/test');
-	var db = mongoose.connection;
-	db.on('error', console.error.bind(console, 'connection error:'));
-	db.once('open', function() {
-		var query  = Message.where({ name: name });
-		query.findOne(function (err, message) {
-			if (err) return handleError(err);
-			if (message) {
-			  res.json({message:message.message, name:message.name});
-			} else {
-				res.status(404).json({message: 'Not found.'})
-			}
-		});
-	});
+  const { messageDAO } = database;
+  messageDAO.findOne(name, (message) => {
+    res.json({ message: message.message, name: message.name });
+  }, (err) => {
+    if (err !== undefined) console.log(err);
+    res.status(404).json({ message: 'Not found.' });
+  });
 }
 
 function postMessage(req, res) {
+  const requestMessage = req.body;
 
-	const requestMessage = req.body;
-
-	mongoose.connect('mongodb://' + DB_ADDRESS + ':' + DB_PORT + '/test');
-	var db = mongoose.connection;
-	db.on('error', console.error.bind(console, 'connection error:'));
-	db.once('open', function() {
-
-		var m = new Message({ message:  requestMessage.message, name: requestMessage.name });
-		m.save(function (err, message) {
-	    if (err) return console.error(err);
-
-		  // this sends back a JSON response which is a single string
-		  res.status(201).end();
-	  });
-	});
+  const { messageDAO } = database;
+  messageDAO.saveOne(requestMessage, (m) => {
+    res.status(201).end();
+  }, (err) => {
+    console.log(`Error: ${err}`);
+    res.status(403).end();
+  });
 }
