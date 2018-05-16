@@ -1,0 +1,19 @@
+version: '3.1'
+services:
+  database:
+    container_name: db
+    build:
+      context: ./
+      dockerfile: docker_images/database/Dockerfile
+    ports:
+      - "27017:27017"
+
+  restapi:
+    container_name: rest_api
+    build:
+      context: ./
+      dockerfile: docker_images/rest_api/Dockerfile
+    ports:
+      - "4000:10010"
+    links:
+      - database
