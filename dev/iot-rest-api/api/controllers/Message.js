@@ -41,10 +41,14 @@ function getMessage(req, res) {
 
   const { messageDAO } = database;
   messageDAO.findOne(name, (message) => {
-    res.json({ message: message.message, name: message.name });
+    if (message === null) {
+      res.status(404).json({ message: 'Not found.' });
+    } else {
+      res.json({ message: message.message, name: message.name });
+    }
   }, (err) => {
     if (err !== undefined) console.log(err);
-    res.status(404).json({ message: 'Not found.' });
+    res.status(500).json({ message: 'An error occurred' });
   });
 }
 
@@ -56,6 +60,6 @@ function postMessage(req, res) {
     res.status(201).end();
   }, (err) => {
     console.log(`Error: ${err}`);
-    res.status(403).end();
+    res.status(500).end();
   });
 }

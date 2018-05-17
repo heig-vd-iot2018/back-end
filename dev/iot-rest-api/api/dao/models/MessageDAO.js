@@ -1,48 +1,66 @@
-const mongoose = {}
 const utils = require('../../helpers/utils');
-
-// /* Message schema */
-// const messageSchema = mongoose.Schema({
-//   message: String,
-//   name: String,
-// });
-// const Message = mongoose.model('Message', messageSchema);
 
 class MessageDAO {
   constructor(settings) {
-    utils.assertRequiredProperties(settings, ['dbAddress', 'dbPort']);
+    utils.assertRequiredProperties(
+      settings,
+      ['dbAddress', 'dbPort', 'dbName', 'mongoClient']
+    );
 
     this.settings = settings;
   }
 
   findOne(name, onSuccess, onError) {
-    mongoose.connect(`mongodb://${this.settings.dbAddress}:${this.settings.dbPort}/test`);
-    const db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'connection error:'));
-    db.once('open', () => {
-      const query = Message.where({ name });
-      query.findOne((err, message) => {
-        if (err) onError(err);
-        if (message) {
-          onSuccess(message);
-        } else {
-          onError();
-        }
-      });
+    const { mongoClient } = this.settings;
+    const { dbName } = this.settings;
+    const url = `mongodb://${this.settings.dbAddress}:${this.settings.dbPort}`;
+
+    mongoClient.connect(url, (err, client) => {
+      if (err !== null) {
+        onError(err);
+      } else {
+        const db = client.db(dbName);
+
+        const collection = db.collection('messages');
+        // Insert some documents
+        collection.findOne({ name }, (error, message) => {
+          if (error !== null) {
+            onError(error);
+          } else {
+            onSuccess(message);
+          }
+        });
+
+        client.close();
+      }
     });
   }
 
   saveOne(message, onSuccess, onError) {
-    mongoose.connect(`mongodb://${this.settings.dbAddress}:${this.settings.dbPort}/test`);
-    const db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'connection error:'));
-    db.once('open', () => {
-      const m = new Message({ message: message.message, name: message.name });
-      console.log(m);
-      m.save((err, createdMessage) => {
-        if (err) onError(err);
-        else onSuccess(createdMessage);
-      });
+    const { mongoClient } = this.settings;
+    const { dbName } = this.settings;
+    const url = `mongodb://${this.settings.dbAddress}:${this.settings.dbPort}`;
+
+    mongoClient.connect(url, (err, client) => {
+      if (err !== null) {
+        onError(err);
+      } else {
+        const db = client.db(dbName);
+
+        const collection = db.collection('messages');
+        // Insert some documents
+        collection.insertOne(message, (error, result) => {
+          if (error !== null) {
+            onError(error);
+          } else if (result.insertedCount !== 1) {
+            onError(error);
+          } else {
+            onSuccess(result.ops[0]);
+          }
+        });
+
+        client.close();
+      }
     });
   }
 }
