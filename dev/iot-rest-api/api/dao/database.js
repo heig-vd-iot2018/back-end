@@ -1,5 +1,5 @@
 const dbConfig = require('../../config/database');
-const MessageDAO = require('./models/MessageDAO');
+const MessageDAO = require('./message/MessageDAO');
 const { MongoClient } = require('mongodb');
 
 const database = {

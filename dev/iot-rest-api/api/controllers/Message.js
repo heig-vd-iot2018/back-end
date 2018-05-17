@@ -1,3 +1,5 @@
+const Message = require('../models/Message');
+
 'use strict';
 /*
  'use strict' is not required but helpful for turning syntactical errors into true errors in the program flow
@@ -53,10 +55,10 @@ function getMessage(req, res) {
 }
 
 function postMessage(req, res) {
-  const requestMessage = req.body;
+  const message = new Message(req.body.name, req.body.message);
 
   const { messageDAO } = database;
-  messageDAO.saveOne(requestMessage, (m) => {
+  messageDAO.saveOne(message, (m) => {
     res.status(201).end();
   }, (err) => {
     console.log(`Error: ${err}`);
