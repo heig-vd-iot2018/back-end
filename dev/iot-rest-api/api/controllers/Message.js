@@ -1,4 +1,5 @@
 const Message = require('../models/Message');
+const MessageDTO = require('../dto/message/MessageDTO');
 
 'use strict';
 /*
@@ -12,7 +13,6 @@ const Message = require('../models/Message');
 
   It is a good idea to list the modules that your application depends on in the package.json in the project root
  */
-var util = require('util');
 const database = require('../dao/database');
 
 /*
@@ -27,10 +27,6 @@ const database = require('../dao/database');
   In the starter/skeleton project the 'get' operation on the '/hello' path has an operationId named 'hello'.  Here,
   we specify that in the exports of this module that 'hello' maps to the function named 'hello'
  */
-module.exports = {
-  getMessage,
-	postMessage
-};
 
 /*
   Functions in a127 controllers used for operations should take two parameters:
@@ -42,15 +38,14 @@ function getMessage(req, res) {
   const name = req.swagger.params.name.value;
 
   const { messageDAO } = database;
-  messageDAO.findOne(name, (message) => {
+  messageDAO.findOne(name).then((message) => {
     if (message === null) {
       res.status(404).json({ message: 'Not found.' });
     } else {
-      res.json({ message: message.message, name: message.name });
+      res.json(new MessageDTO(message.message, message.name));
     }
   }, (err) => {
-    if (err !== undefined) console.log(err);
-    res.status(500).json({ message: 'An error occurred' });
+    res.status(500).json({ message: `An error occurred: ${err}` });
   });
 }
 
@@ -58,10 +53,14 @@ function postMessage(req, res) {
   const message = new Message(req.body.name, req.body.message);
 
   const { messageDAO } = database;
-  messageDAO.saveOne(message, (m) => {
+  messageDAO.saveOne(message).then((m) => {
     res.status(201).end();
   }, (err) => {
-    console.log(`Error: ${err}`);
-    res.status(500).end();
+    res.status(500).json({ message: err.toString() });
   });
 }
+
+module.exports = {
+  getMessage,
+  postMessage,
+};

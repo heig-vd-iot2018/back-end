@@ -10,57 +10,61 @@ class MessageDAO {
     this.settings = settings;
   }
 
-  findOne(name, onSuccess, onError) {
+  findOne(name) {
     const { mongoClient } = this.settings;
     const { dbName } = this.settings;
     const url = `mongodb://${this.settings.dbAddress}:${this.settings.dbPort}`;
 
-    mongoClient.connect(url, (err, client) => {
-      if (err !== null) {
-        onError(err);
-      } else {
-        const db = client.db(dbName);
+    return new Promise((resolve, reject) => {
+      mongoClient.connect(url, (err, client) => {
+        if (err !== null) {
+          reject(err);
+        } else {
+          const db = client.db(dbName);
 
-        const collection = db.collection('messages');
-        // Insert some documents
-        collection.findOne({ name }, (error, message) => {
-          if (error !== null) {
-            onError(error);
-          } else {
-            onSuccess(message);
-          }
-        });
+          const collection = db.collection('messages');
+          // Insert some documents
+          collection.findOne({ name }, (error, message) => {
+            if (error !== null) {
+              reject(error);
+            } else {
+              resolve(message);
+            }
+          });
 
-        client.close();
-      }
+          client.close();
+        }
+      });
     });
   }
 
-  saveOne(message, onSuccess, onError) {
+  saveOne(message) {
     const { mongoClient } = this.settings;
     const { dbName } = this.settings;
     const url = `mongodb://${this.settings.dbAddress}:${this.settings.dbPort}`;
 
-    mongoClient.connect(url, (err, client) => {
-      if (err !== null) {
-        onError(err);
-      } else {
-        const db = client.db(dbName);
+    return new Promise((resolve, reject) => {
+      mongoClient.connect(url, (err, client) => {
+        if (err !== null) {
+          reject(err);
+        } else {
+          const db = client.db(dbName);
 
-        const collection = db.collection('messages');
-        // Insert some documents
-        collection.insertOne(message, (error, result) => {
-          if (error !== null) {
-            onError(error);
-          } else if (result.insertedCount !== 1) {
-            onError(error);
-          } else {
-            onSuccess(result.ops[0]);
-          }
-        });
+          const collection = db.collection('messages');
+          // Insert some documents
+          collection.insertOne(message, (error, result) => {
+            if (error !== null) {
+              reject(error);
+            } else if (result.insertedCount !== 1) {
+              reject(error);
+            } else {
+              resolve(result.ops[0]);
+            }
+          });
 
-        client.close();
-      }
+          client.close();
+        }
+      });
     });
   }
 }
