@@ -1,6 +1,13 @@
 const utils = require('../../helpers/utils');
 
+/**
+  DAO class for accessing Message object.
+*/
 class MessageDAO {
+  /**
+    @constructor
+    @param settings {object} - The settings required to access the database
+  */
   constructor(settings) {
     utils.assertRequiredProperties(
       settings,
@@ -10,6 +17,11 @@ class MessageDAO {
     this.settings = settings;
   }
 
+  /**
+    Find a Message in the databse.
+    @param name {string} - The name of the Message author
+    @return {Promise object} - A promise to the Message object or null if not found
+  */
   findOne(name) {
     const { mongoClient } = this.settings;
     const { dbName } = this.settings;
@@ -38,6 +50,11 @@ class MessageDAO {
     });
   }
 
+  /**
+    Save a Message in the database
+    @param message {Message object} - The Message model to save
+    @return {Promise object} - Success or error
+  */
   saveOne(message) {
     const { mongoClient } = this.settings;
     const { dbName } = this.settings;
