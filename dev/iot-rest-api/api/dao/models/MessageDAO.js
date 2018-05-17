@@ -1,19 +1,16 @@
-const mongoose = require('mongoose');
+const mongoose = {}
+const utils = require('../../helpers/utils');
 
-/* Message schema */
-const messageSchema = mongoose.Schema({
-  message: String,
-  name: String,
-});
-const Message = mongoose.model('Message', messageSchema);
+// /* Message schema */
+// const messageSchema = mongoose.Schema({
+//   message: String,
+//   name: String,
+// });
+// const Message = mongoose.model('Message', messageSchema);
 
 class MessageDAO {
   constructor(settings) {
-    if (settings === undefined) {
-      throw new Error('Missing argument settings.');
-    } else if (settings.dbAddress === undefined || settings.dbPort === undefined) {
-      throw new Error('Missing settings property.');
-    }
+    utils.assertRequiredProperties(settings, ['dbAddress', 'dbPort']);
 
     this.settings = settings;
   }
@@ -41,6 +38,7 @@ class MessageDAO {
     db.on('error', console.error.bind(console, 'connection error:'));
     db.once('open', () => {
       const m = new Message({ message: message.message, name: message.name });
+      console.log(m);
       m.save((err, createdMessage) => {
         if (err) onError(err);
         else onSuccess(createdMessage);
