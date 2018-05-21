@@ -69,7 +69,8 @@ describe('MessageDAO', function describeMessageDAO() {
   });
 
   describe('saveOne()', () => {
-    this.timeout(2000);
+    this.timeout(2000); // Set the timeout back to normal
+
     it('should return a Promise.', (done) => {
       messageDAO = new MessageDAO(testDatabaseConfig);
       const p = messageDAO.saveOne(new Message('author', 'message'));
@@ -78,6 +79,30 @@ describe('MessageDAO', function describeMessageDAO() {
         () => { done(); },
         () => { done(new Error('The Promise was rejected')); }
       );
+    });
+
+    it('should reject the returned Promise if it cannot connect to the database', (done) => {
+      const falseConfig = {
+        dbAddress: 'localhost',
+        dbPort: 0,
+        dbName: 'falseDBName',
+        mongoClient: MongoClient,
+      };
+      messageDAO = new MessageDAO(falseConfig);
+      messageDAO.saveOne(new Message('author', 'message'))
+        .should.be.rejected()
+        .then(() => {
+          done();
+        });
+    });
+
+    it('should fulfill the returned Promise if the object was savec in databse', (done) => {
+      messageDAO = new MessageDAO(testDatabaseConfig);
+      messageDAO.saveOne(new Message('author', 'message'))
+        .should.be.fulfilled()
+        .then(() => {
+          done();
+        });
     });
   });
 });
