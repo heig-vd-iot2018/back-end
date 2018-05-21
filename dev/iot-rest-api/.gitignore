@@ -35,3 +35,6 @@ config/runtime.yaml
 
 # Environment variables
 .env
+
+# In memory database binary files
+.mongodb-binaries
