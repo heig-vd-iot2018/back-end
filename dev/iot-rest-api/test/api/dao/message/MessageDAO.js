@@ -7,6 +7,7 @@ const { MongoClient } = require('mongodb');
 
 
 let mongoServer;
+let testDatabaseConfig;
 let messageDAO;
 
 describe('MessageDAO', function describeMessageDAO() {
@@ -18,12 +19,15 @@ describe('MessageDAO', function describeMessageDAO() {
     const port = await mongoServer.getPort();
     const dbHost = 'localhost';
     const dbName = await mongoServer.getDbName();
-    messageDAO = new MessageDAO({
+
+    // Create the testing database configuration
+    testDatabaseConfig = {
       dbAddress: dbHost,
       dbPort: port,
       dbName,
       mongoClient: MongoClient,
-    });
+    };
+    // Finished Before
     done();
   });
 
@@ -32,9 +36,42 @@ describe('MessageDAO', function describeMessageDAO() {
     done();
   });
 
+  describe('constructor', () => {
+    it('should throw an Error if the settings argument object is missing in the constructor', (done) => {
+      (() => {
+        messageDAO = new MessageDAO();
+      }).should.throw('Required object is undefined.');
+      done();
+    });
+
+    it('should throw an Error if one of properties is missing in the settings argument object', (done) => {
+      (() => {
+        messageDAO = new MessageDAO({});
+      }).should.throw('Missing required property dbAddress.');
+      (() => {
+        messageDAO = new MessageDAO({ dbAddress: '' });
+      }).should.throw('Missing required property dbPort.');
+      (() => {
+        messageDAO = new MessageDAO({ dbAddress: '', dbPort: 0 });
+      }).should.throw('Missing required property dbName.');
+      (() => {
+        messageDAO = new MessageDAO({ dbAddress: '', dbPort: 0, dbName: '' });
+      }).should.throw('Missing required property mongoClient.');
+      done();
+    });
+
+    it('should not throw an Error if the required settings are provided as argument', (done) => {
+      (() => {
+        messageDAO = new MessageDAO(testDatabaseConfig);
+      }).should.not.throw();
+      done();
+    });
+  });
+
   describe('saveOne()', () => {
-    this.timeout(200);
+    this.timeout(2000);
     it('should return a Promise.', (done) => {
+      messageDAO = new MessageDAO(testDatabaseConfig);
       const p = messageDAO.saveOne(new Message('author', 'message'));
       p.should.be.a.Promise();
       p.then(
