@@ -47,24 +47,39 @@ communication de LoRa.
 récupérer pour identifier précisement le capteur.
 
 ### Éléments stockés dans la base de données
-A FAIRE
+Deux principales collections seront stockés dans la base de donnée MongaDB:
 
+* La collection `Users` qui contiendra les utilisateurs autorisés à accéder à l'API
+    * Ils seront stockés en dur dans le cadre de ce projet
+    * Chaque utilisateur se verra attribuer un `JSON Web Tokens (JWT)` unique qu'il devra utiliser à chaque communication avec le serveur et lui-même et permettra de gérer les contrôles d'accès.
+* La collection `Sensors` qui contiendra toutes les descriptions des différents capteurs. La structure de l'objet est la suivante:
+    * VOIR SUR SWAGGER
 
 ### Endpoints
-A FINIR
-Voici les différents endpoints disponibles
-
-1. POST - Endpoint pour les capteurs
-    * Chaque capteur pousse ses données brutes
-    * Décryptage des données?
-    * Les données seront traitées et stocker dans une base de donnée
-
-2. GET - Récupération des données traitée pour le Frontend
-
-3. GET - Récupération des configurations des capteurs (Limitations, rang, etc)
-    * Récupère la configuration d'un capteur spécifique
-
-4. POST - Modification des fréquences d'un capteur
+* `/sensors`
+    * `GET`
+    * Permet de récupérer la liste des capteurs
+    * Accessible par un utilisateur standard authentifié
+* `/sensors/{id}`
+    * `GET`
+    * Permet de récupérer un capteur spécifique
+    * Accessible par un utilisateur standard authentifié
+* `/sensors/{id}`
+    * `PATCH`
+    * Permet de changer la fréquence de rafraîchissement pour un capteur spécifique
+    * Accessible uniquement par un utilisateur authentifié ayant les droits administrateurs
+* `/nodes`
+    * `GET`
+    * Permet de récupérer la liste des noeuds [de capteurs]
+    * Accessible par un utilisateur standard authentifié
+* `/nodes/{id}`
+    * `GET`
+    * Permet de récupérer la liste des capteurs pour un noeud spécifique
+    * Accessible par un utilisateur standard authentifié
+* `/sensors/data`
+    * `POST`
+    * Point d'entrée pour stocker les mesures récupérées par les différents capteurs
+    * Accessible par un utilisateur standard authentifié
 
 ## Déploiement
 [Instruction de déploiement/utilisation]
