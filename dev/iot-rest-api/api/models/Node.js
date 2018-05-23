@@ -2,8 +2,8 @@ class Node {
   constructor(id, location, dateCreated, dateUpdated, active, sensors) {
     this.id = id;
     this.location = location;
-    this.date_created = dateCreated;
-    this.date_updated = dateUpdated;
+    this.dateCreated = dateCreated;
+    this.dateUpdated = dateUpdated;
     this.active = active;
     this.sensors = sensors;
   }

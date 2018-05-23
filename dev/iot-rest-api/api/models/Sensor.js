@@ -10,11 +10,11 @@ class Sensor {
     values
   ) {
     this.id = id;
-    this.documentation_link = documentationLink;
-    this.date_created = dateCreated;
-    this.date_updated = dateUpdated;
+    this.documentationLink = documentationLink;
+    this.dateCreated = dateCreated;
+    this.dateUpdated = dateUpdated;
     this.active = active;
-    this.refresh_interval = refreshInterval;
+    this.refreshInterval = refreshInterval;
     this.encoding = encoding;
     this.values = values;
   }
