@@ -21,10 +21,12 @@
     "mockgoose": "^7.3.5",
     "mongodb-memory-server": "^1.7.4",
     "should": "^13.2.1",
-    "supertest": "^1.0.0"
+    "supertest": "^1.0.0",
+    "swagger-markdown": "^1.1.3"
   },
   "scripts": {
     "start": "node app.js",
-    "test": "swagger project test"
+    "test": "swagger project test",
+    "md-docs": "swagger-markdown -i api/swagger/swagger.yaml"
   }
 }
