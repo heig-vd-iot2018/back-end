@@ -1,7 +1,8 @@
 swagger: "2.0"
 info:
   version: "0.0.1"
-  title: Hello World App
+  title: IOT Back-end REST API
+  description: https://github.com/heig-vd-iot2018/back-end
 # during dev, should point to your local machine
 host: localhost:10010
 # basePath prefixes all resource paths 
@@ -11,6 +12,7 @@ schemes:
   # tip: remove http to make production-grade
   - http
   - https
+  
 # format of bodies a client can send (Content-Type)
 consumes:
   - application/json
@@ -18,48 +20,118 @@ consumes:
 produces:
   - application/json
 paths:
-  /messages:
-    # binds a127 app logic to a route
-    x-swagger-router-controller: Message
+  /sensors:
+    x-swagger-router-controller: Sensor
     get:
-      description: Returns 'Hello' to the caller
-      # used as the method name of the controller
-      operationId: getMessage
-      parameters:
-        - name: name
-          in: query
-          description: The name of the person from which we want to read the secret message.
-          required: true
-          type: string
+      description: Returns list of all sensors
+      operationId: getSensors
+      
       responses:
         "200":
           description: Success
           schema:
-            # a pointer to a definition
-            $ref: "#/definitions/Message"
-        # responses may fall through to errors
+            type: array
+            items:
+              $ref: "#/definitions/Sensor"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+              
+  /sensors/{id}:
+    x-swagger-router-controller: Sensor
+    get:
+      description: Get a sensor
+      operationId: getSensor
+      
+      parameters:
+        - name: id
+          in: path
+          description: The id of the sensors to get
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Sensor"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    patch:
+      description: To modifiy a sensors
+      
+      parameters:
+        - name: id
+          in: path
+          description: The id of the sensors to get
+          required: true
+          type: integer
+      responses:
+        200:
+          description: OK
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    
+  /nodes:
+    x-swagger-router-controller: Node
+    get:
+      description: Returns list of all nodes
+      operationId: getNodes
+      
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Node"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    
+  /nodes/{id}:
+    x-swagger-router-controller: Node
+    get:
+      description: Returns a node
+      operationId: getNode
+      
+      parameters:
+        - name: id
+          in: path
+          description: The id of the node to get
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Node"
         default:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
             
+  /sensors/data:
+    x-swagger-router-controller: Sensor
     post:
-      description: Post a secret message to a given name.
-      operationId: postMessage
+      description: Allow sensors to post their data
+      operationId: setData
       
       parameters:
-        - name: message
+        - name: id
           in: body
-          description: The name of the person to whom to say hello
+          description: The id of the node to set
           required: true
           schema:
-            $ref: "#/definitions/Message"
-      produces:
-        - text/plain
+            $ref: "#/definitions/SensorData"
       responses:
-        "201":
-            description: Created
-        # responses may fall through to errors
+        "200":
+          description: Success
         default:
           description: Error
           schema:
@@ -69,14 +141,72 @@ paths:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
-  Message:
+  Node:
     required:
-      - message
-      - name
+      - id
+      - createdDate
+      - lastUpdated
+      - active
+      - localisation
+      - sensors
+
     properties:
-      message:
+      id:
+        type: integer
+      createdDate:
         type: string
-      name:
+      lastUpdated:
+        type: string
+      active:
+        type: boolean
+      localisation:
+        type: string
+      sensors:
+        type: array
+        items:
+          # Only id of sensors
+          type: integer
+
+  Sensor:
+    required:
+      - id
+      - createdDate
+      - lastUpdated
+      - active
+      - refreshInterval
+      - encoding
+      - values
+      - documentation
+
+    properties:
+      id:
+        type: integer
+      createdDate:
+        type: string
+      lastUpdated:
+        type: string
+      active:
+        type: boolean
+      refreshInterval:
+        type: integer
+      encoding:
+        type: string
+      values:
+        type: array
+        items:
+          type: string
+      documentation:
+        type: string
+        
+  SensorData:
+    required:
+      - id
+      - payload
+    
+    properties:
+      id:
+        type: integer
+      payload:
         type: string
         
   ErrorResponse:
