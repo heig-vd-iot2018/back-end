@@ -36,3 +36,13 @@ swagger project edit
 ```
 
 The REST API is available on the port 10010 on `localhost:10010`
+
+## Generate a markdown of the Swagger file
+
+To generate the swagger documentation to markdown, you can use:
+
+```
+npm run md-docs
+```
+
+This will create `api/swagger/swagger.md` file. You can visit this [page](./api/swagger/swagger.md) to display the endpoints.
