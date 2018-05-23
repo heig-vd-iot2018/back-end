@@ -10,14 +10,17 @@
   "dependencies": {
     "dotenv": "^5.0.1",
     "express": "^4.12.3",
-    "mongoose": "^5.0.17",
+    "mongodb": "^3.1.0-beta4",
     "swagger-express-mw": "^0.1.0"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.11.0",
-    "should": "^7.1.0",
+    "mocha": "^5.1.1",
+    "mockgoose": "^7.3.5",
+    "mongodb-memory-server": "^1.7.4",
+    "should": "^13.2.1",
     "supertest": "^1.0.0"
   },
   "scripts": {

@@ -1,3 +1,6 @@
+const Message = require('../models/Message');
+const MessageDTO = require('../dto/message/MessageDTO');
+
 'use strict';
 /*
  'use strict' is not required but helpful for turning syntactical errors into true errors in the program flow
@@ -10,19 +13,7 @@
 
   It is a good idea to list the modules that your application depends on in the package.json in the project root
  */
-var util = require('util');
-var mongoose = require('mongoose');
-
-
-/* Message schema */
-var messageSchema = mongoose.Schema({
-	message: String,
-	name: String
-});
-var Message = mongoose.model('Message', messageSchema);
-
-const DB_ADDRESS = process.env.DB_ADDRESS;
-const DB_PORT = process.env.DB_PORT;
+const database = require('../dao/database');
 
 /*
  Once you 'require' a module you can reference the things that it exports.  These are defined in module.exports.
@@ -36,10 +27,6 @@ const DB_PORT = process.env.DB_PORT;
   In the starter/skeleton project the 'get' operation on the '/hello' path has an operationId named 'hello'.  Here,
   we specify that in the exports of this module that 'hello' maps to the function named 'hello'
  */
-module.exports = {
-  getMessage,
-	postMessage
-};
 
 /*
   Functions in a127 controllers used for operations should take two parameters:
@@ -48,40 +35,32 @@ module.exports = {
   Param 2: a handle to the response object
  */
 function getMessage(req, res) {
-  // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
-  var name = req.swagger.params.name.value;
+  const name = req.swagger.params.name.value;
 
-	mongoose.connect('mongodb://' + DB_ADDRESS + ':' + DB_PORT + '/test');
-	var db = mongoose.connection;
-	db.on('error', console.error.bind(console, 'connection error:'));
-	db.once('open', function() {
-		var query  = Message.where({ name: name });
-		query.findOne(function (err, message) {
-			if (err) return handleError(err);
-			if (message) {
-			  res.json({message:message.message, name:message.name});
-			} else {
-				res.status(404).json({message: 'Not found.'})
-			}
-		});
-	});
+  const { messageDAO } = database;
+  messageDAO.findOne(name).then((message) => {
+    if (message === null) {
+      res.status(404).json({ message: 'Not found.' });
+    } else {
+      res.json(new MessageDTO(message.message, message.name));
+    }
+  }, (err) => {
+    res.status(500).json({ message: `An error occurred: ${err}` });
+  });
 }
 
 function postMessage(req, res) {
+  const message = new Message(req.body.name, req.body.message);
 
-	const requestMessage = req.body;
-
-	mongoose.connect('mongodb://' + DB_ADDRESS + ':' + DB_PORT + '/test');
-	var db = mongoose.connection;
-	db.on('error', console.error.bind(console, 'connection error:'));
-	db.once('open', function() {
-
-		var m = new Message({ message:  requestMessage.message, name: requestMessage.name });
-		m.save(function (err, message) {
-	    if (err) return console.error(err);
-
-		  // this sends back a JSON response which is a single string
-		  res.status(201).end();
-	  });
-	});
+  const { messageDAO } = database;
+  messageDAO.saveOne(message).then((m) => {
+    res.status(201).end();
+  }, (err) => {
+    res.status(500).json({ message: err.toString() });
+  });
 }
+
+module.exports = {
+  getMessage,
+  postMessage,
+};
