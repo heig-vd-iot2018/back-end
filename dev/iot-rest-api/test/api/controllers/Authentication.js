@@ -4,6 +4,10 @@ const server = require('../../../app');
 const jwt = require('jsonwebtoken');
 const roles = require('../../../api/helpers/roles');
 
+
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME === undefined ? 'admin' : process.env.ADMIN_USERNAME;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD === undefined ? 'admin1234' : process.env.ADMIN_PASSWORD;
+
 describe('controllers', () => {
   before((done) => {
     if (server.locals.status === 'up') {
@@ -21,8 +25,8 @@ describe('controllers', () => {
       request(server)
         .post('/auth')
         .send({
-          username: 'admin',
-          password: 'admin1234',
+          username: ADMIN_USERNAME,
+          password: ADMIN_PASSWORD,
         })
         .set('Accept', 'text/html')
         .expect(200)
@@ -39,7 +43,7 @@ describe('controllers', () => {
               done(error);
             } else {
               try {
-                decodedToken.username.should.be.equal('admin');
+                decodedToken.username.should.be.equal(ADMIN_USERNAME);
                 decodedToken.role.should.be.equal(roles.ADMIN);
                 done();
               } catch (e) {
@@ -55,7 +59,7 @@ describe('controllers', () => {
         .post('/auth')
         .send({
           username: 'notauser',
-          password: 'admin1234',
+          password: ADMIN_PASSWORD,
         })
         .set('Accept', 'text/html')
         .expect(401)
@@ -69,7 +73,7 @@ describe('controllers', () => {
       request(server)
         .post('/auth')
         .send({
-          username: 'admin',
+          username: ADMIN_USERNAME,
           password: 'randomInvalidPassword',
         })
         .set('Accept', 'text/html')
@@ -84,7 +88,7 @@ describe('controllers', () => {
       request(server)
         .post('/auth')
         .send({
-          password: 'asdf1234',
+          password: ADMIN_PASSWORD,
         })
         .set('Accept', 'text/html')
         .expect(400)
@@ -98,7 +102,7 @@ describe('controllers', () => {
       request(server)
         .post('/auth')
         .send({
-          username: 'a@gmail.com',
+          username: ADMIN_USERNAME,
         })
         .set('Accept', 'text/html')
         .expect(400)

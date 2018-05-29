@@ -42,13 +42,18 @@ const config = {
   },
 };
 
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME === undefined ? 'admin' : process.env.ADMIN_USERNAME;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD === undefined ? 'admin1234' : process.env.ADMIN_PASSWORD;
+const DEFAULT_USER_USERNAME = process.env.DEFAULT_USER_USERNAME === undefined ? 'user' : process.env.DEFAULT_USER_USERNAME;
+const DEFAULT_USER_PASSWORD = process.env.DEFAULT_USER_PASSWORD === undefined ? 'admin' : process.env.DEFAULT_USER_PASSWORD;
+
 // Create default admin and user
-userDAO.create('admin', 'admin1234', roles.ADMIN)
+userDAO.create(ADMIN_USERNAME, ADMIN_PASSWORD, roles.ADMIN)
   .then((admin) => {
     console.log('Default admin created');
     console.log(admin);
 
-    userDAO.create('user', 'user1234', roles.DEFAULT)
+    userDAO.create(DEFAULT_USER_USERNAME, DEFAULT_USER_PASSWORD, roles.DEFAULT)
       .then((user) => {
         console.log('Default user created');
         console.log(user);

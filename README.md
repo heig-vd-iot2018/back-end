@@ -100,10 +100,10 @@ Deux principales collections seront stockés dans la base de donnée MongaDB:
     serveur qui l'autorisera à accéder aux endpoints. Voir le chapitre
     [Authentification](#authentification) pour plus de détails.
     * La structure de l'objet est la suivante:
+        * `id` - identifiant unique 
         * `username` - Le nom de l'utilisateur.
         * `password` - Le mot de passe (stocké de façon sécurisée).
-        * `date_created` - La date à laquelle l'objet a été créé.
-        * `date_updated` - La dernière date de mise à jour de l'objet.
+        * `role` - le rôle (lié aux droits d'accès de l'utilisateur) [0: utilisateur normal | 1: administrateur]
 * La collection `BlacklistedTokens` qui contiendra les tokens qui ne sont plus autorisés
 à accéder à l'API.
     * Dans le cadre de ce projet, cette collection ne sera pas nettoyée
