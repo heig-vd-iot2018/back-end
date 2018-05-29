@@ -65,21 +65,21 @@ et le JWT généré se trouvera dans le body de la requête.
 Pour accéder à un endpoint protégé, il faudra ajouter le header `Authorization` à vos requêtes avec comme valeur 
 `Bearer <JWT>` où `<JWT>` est à remplacer par le token récupéré à l'étape précédente. 
 
-Si l'utilisateur pour lequel ce JWT a été généré a les droit d'accès (autorisation) au endpoint au question, la requête sera authentifiée et autorisée. Les deux rôles existants sont administrateur et utilisateur par défaut.
+Si l'utilisateur pour lequel ce JWT a été généré a les droit d'accès (autorisation) au endpoint au question, la requête sera authentifiée et autorisée. Les deux rôles existants sont administrateur ou utilisateur par défaut.
 
 Pour plus de détail, notamment sur les contraintes de validation du payload, consulter la [spécification de l'API REST](./dev/iot-rest-api/api/swagger/swagger.md). 
 
-#### Utilisateurs par existants par défaut
+#### Utilisateurs existants par défaut
 
-Deux utilisateurs existant par défaut sont créés au déploiement de l'API sur un serveur. Par défaut et en mode dévelopement ces utilisateurs sont: 
+Deux utilisateurs existants par défaut sont créés au déploiement de l'API sur un serveur. Par défaut et en mode dévelopement ces utilisateurs sont: 
 
 
-| Username        | Password           | Role  |
-| ------------- |:-------------:| -----:|
-| user      | user1234 | $1600 | utilisateur par défaut |
-| admin     | admin1234      |   administrateur |
+| Username  | Password       | Role                   |
+| ----------| -------------- | ---------------------- |
+| user      | user1234       | utilisateur par défaut |
+| admin     | admin1234      | administrateur         |
 
-Attention à ne pas garder ces mots de passes et nom d'utilisateurs lors du deploiement.
+Attention à ne pas garder ces mots de passes et nom d'utilisateurs lors du deploiement. Se référer à la section déploiement pour plus d'information.
 
 ### Représentations
 Les différents éléments du monde réels sont représentés de la façon suivante:
