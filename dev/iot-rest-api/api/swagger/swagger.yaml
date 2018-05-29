@@ -33,7 +33,8 @@ paths:
       operationId: signIn
       description: Sign a user in using username and password credentials.
       produces:
-        - text/plain
+        - text/html
+        - application/json
         
       security: []
       parameters:
@@ -49,6 +50,14 @@ paths:
           description: Authentication successfull.
           schema: 
             type: string
+        '400':
+          description: Bad request
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        '401':
+          description: Unauthorized username or password
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 
   /sensors:
     x-swagger-router-controller: Sensor

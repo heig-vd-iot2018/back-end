@@ -54,11 +54,11 @@ class UserDAO {
 
           const collection = db.collection('users');
           // Insert some documents
-          collection.findOne({ username }, (error, message) => {
+          collection.findOne({ username }, (error, user) => {
             if (error !== null) {
               reject(error);
             } else {
-              resolve(message);
+              resolve(user);
             }
           });
 
