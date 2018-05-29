@@ -59,7 +59,7 @@ const currentUserToken = req.custom.currentUserToken;
 
 where `req` is the express request object.
 
-To effectuate authorization, simply test the `role` property of that decoded JWT in your endpoint controller. It can be default or admin value. 
+To manage authorization, simply test the `role` property of that decoded JWT in your endpoint controller. It can be default or admin value. 
 
 ```javascript
 const roles = require('../../../api/helpers/roles'); // might want to correct the path
