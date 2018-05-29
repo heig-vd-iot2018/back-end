@@ -30,9 +30,7 @@ paths:
         "200":
           description: Success
           schema:
-            type: array
-            items:
-              $ref: "#/definitions/Sensor"
+            $ref: "#/definitions/Sensor"
         default:
           description: Error
           schema:
