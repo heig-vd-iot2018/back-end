@@ -12,33 +12,34 @@ if (process.env.JWT_SECRET === undefined) {
   console.log("Exiting");
   process.exit(1);
 }
-const JWT_SECRET = process.env.JWT_SECRET;
+const { JWT_SECRET } = process.env;
 
-var config = {
+const config = {
   appRoot: __dirname, // required config
   swaggerSecurityHandlers: {
     Bearer: function jwtSecurityHandler(req, authOrSecDef, scopesOrApiKey, callback) {
-      var token = null;
+      let token = null;
 
       // Read the token from header
       if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
-        token = req.headers.authorization.split(' ')[1];
-        jwt.verify(token, JWT_SECRET, (err, verified) => {
+        [, token] = req.headers.authorization.split(' ');
+        jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
           if (err) {
-            callback(new Error("Invalid token"));
-            return;
+            callback(new Error('Invalid token'));
           } else {
-            // TODO: Check in DB if 
-            callback();
-            return;
+            // TODO: Check in DB if decodedToken is black listed
+
+            // Enhancing request object to add current user decoded token
+            req.custom = {};
+            req.custom.currentUserToken = decodedToken;
+            callback(null);
           }
         });
       } else {
-        callback(new Error("No auth token found"));
-        return;
-      }      
-    }
-  }
+        callback(new Error('No auth token found'));
+      }
+    },
+  },
 };
 
 SwaggerExpress.create(config, function(err, swaggerExpress) {
