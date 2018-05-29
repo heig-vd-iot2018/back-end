@@ -1,15 +1,13 @@
-'use strict';
-
 require('dotenv').load();
-var SwaggerExpress = require('swagger-express-mw');
-var app = require('express')();
-var jwt = require('jsonwebtoken');
+const SwaggerExpress = require('swagger-express-mw');
+const app = require('express')();
+const jwt = require('jsonwebtoken');
 
 module.exports = app; // for testing
 
 if (process.env.JWT_SECRET === undefined) {
-  console.error("Undefined JWT_SECRET in .env file. It was nice knowing you... Argh...");
-  console.log("Exiting");
+  console.error('Undefined JWT_SECRET in .env file. It was nice knowing you... Argh...');
+  console.log('Exiting');
   process.exit(1);
 }
 const { JWT_SECRET } = process.env;
@@ -42,16 +40,12 @@ const config = {
   },
 };
 
-SwaggerExpress.create(config, function(err, swaggerExpress) {
+SwaggerExpress.create(config, (err, swaggerExpress) => {
   if (err) { throw err; }
 
   // install middleware
   swaggerExpress.register(app);
 
-  var port = process.env.PORT || 10010;
+  const port = process.env.PORT || 10010;
   app.listen(port);
-
-  if (swaggerExpress.runner.swagger.paths['/hello']) {
-    console.log('try this:\ncurl http://127.0.0.1:' + port + '/hello?name=Scott');
-  }
 });
