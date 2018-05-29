@@ -43,6 +43,30 @@ l'API, des `JSON Web Tokens (JWT)` seront utilisés et devront être utilsés lo
 des communications afin de savoir si un client est authentifié et autorisé à
 accéder à la ressource souhaitée.
 
+#### Obtenir un JWT
+
+Un JWT peut être obtenu en se connectant avec un nom d'utilisateur et un mot passe valide. 
+Pour ce faire il faut effectuer une requête HTTP `POST` sur le endpoint `/auth`. En paramètre, dans 
+le body de la requête, il faut fournir un payload json contenant les informations mentionnées ci-dessus.
+
+```javascript
+{
+    "username": "user",
+    "password": "user1234"
+}
+
+```
+
+Si l'utilisateur existe et que le mot de passe est valide, l'API REST retournera un réponse au format text/plain
+et le JWT généré se trouvera dans le body de la requête.
+
+#### Accéder à un endpoint protégé
+
+Pour accéder à un endpoint protégé, il faudra ajouter le header `Authorization` à vos requêtes avec comme valeur 
+`Bearer <JWT>` où `<JWT>` est à remplacer par le token récupéré à l'étape précédente. 
+
+Pour plus de détail, notamment sur les contraintes de validation du payload, consulter la [spécification de l'API REST](./dev/iot-rest-api/api/swagger/swagger.md). 
+
 ### Représentations
 Les différents éléments du monde réels sont représentés de la façon suivante:
 

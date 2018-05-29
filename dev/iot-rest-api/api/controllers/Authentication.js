@@ -23,6 +23,7 @@ function signIn(req, res) {
             if (error) {
               res.status(500).json(new Error('UNKNOWN_ERROR'));
             } else {
+              res.type('text/plain');
               res.status(200).send(token);
             }
           }
