@@ -2,6 +2,7 @@ require('dotenv').load();
 const SwaggerExpress = require('swagger-express-mw');
 const app = require('express')();
 const jwt = require('jsonwebtoken');
+const { userDAO } = require('./api/dao/database');
 
 module.exports = app; // for testing
 
@@ -39,6 +40,27 @@ const config = {
     },
   },
 };
+
+// Create default user
+userDAO.create('admin', 'admin1234', 1)
+  .then((user) => {
+    console.log('Default admin created');
+    console.log(user);
+  })
+  .catch((err) => {
+    console.log('Error creating default admin.');
+    console.log(err);
+  });
+
+userDAO.create('user', 'user1234', 0)
+  .then((user) => {
+    console.log('Default user created');
+    console.log(user);
+  })
+  .catch((err) => {
+    console.log('Error creating default user with role user.');
+    console.log(err);
+  });
 
 SwaggerExpress.create(config, (err, swaggerExpress) => {
   if (err) { throw err; }
