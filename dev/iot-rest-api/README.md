@@ -46,3 +46,32 @@ npm run md-docs
 ```
 
 This will create `api/swagger/swagger.md` file. You can visit this [page](./api/swagger/swagger.md) to display the endpoints.
+
+## Authentication and Authorization
+
+This section should be tested, but it should work.
+
+To authenticate a user, a middleware `swaggerSecurityHandler` has been defined. Its responsability is to verify that the `Authorization` header exists and contains a valid JWT. If it is valid, it will add the decoded JWT in a custom field in the request. You should then be able to access it in the endpoint controllers using:
+
+```javascript
+const currentUserToken = req.custom.currentUserToken;
+```
+
+where `req` is the express request object.
+
+To effectuate authorization, simply test the `role` property of that decoded JWT in your endpoint controller. It can be default or admin value. 
+
+```javascript
+const roles = require('../../../api/helpers/roles'); // might want to correct the path
+
+function myEndpointController(req, res) {
+	const currentUserToken = req.custom.currentUserToken;
+
+	if (currentUserToken.role === roles.ADMIN) { // Admin is an integer constant (1)
+		// Authorize
+	} else {
+		// Refuse
+	}
+}
+```
+
