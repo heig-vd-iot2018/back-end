@@ -1,15 +1,20 @@
 require('should');
-const request = require('supertest');
 const server = require('../../../app');
+const MongodbMemoryServer = require('mongodb-memory-server').default;
+const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const roles = require('../../../api/helpers/roles');
-
+const config = require('../../config/database.js');
 
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME === undefined ? 'admin' : process.env.ADMIN_USERNAME;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD === undefined ? 'admin1234' : process.env.ADMIN_PASSWORD;
 
+let mongoServer;
+
 describe('controllers', () => {
-  before((done) => {
+  before(async (done) => {
+    mongoServer = new MongodbMemoryServer(config);
+
     if (server.locals.status === 'up') {
       done();
     } else {
@@ -18,6 +23,11 @@ describe('controllers', () => {
         done();
       });
     }
+  });
+
+  after((done) => {
+    mongoServer.stop();
+    done();
   });
 
   describe('POST /auth', () => {

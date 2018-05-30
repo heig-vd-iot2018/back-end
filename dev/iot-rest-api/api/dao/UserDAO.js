@@ -10,7 +10,7 @@ class UserDAO {
     this.settings = settings;
   }
 
-  create(username, password, role) {
+  create(user) {
     const { mongoClient } = this.settings;
     const { dbName } = this.settings;
     const url = `mongodb://${this.settings.dbAddress}:${this.settings.dbPort}`;
@@ -24,7 +24,7 @@ class UserDAO {
 
           const collection = db.collection('users');
           // Insert some documents
-          collection.insertOne({ username, password, role }, (error, result) => {
+          collection.insertOne(user, (error, result) => {
             if (error !== null) {
               reject(error);
             } else if (result.insertedCount !== 1) {
