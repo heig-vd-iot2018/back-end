@@ -36,7 +36,6 @@ function getSensors(req, res) {
 }
 
 function getSensor(req, res) {
-  console.log(req.swagger.params.id.value)
   const id = req.swagger.params.id.value;
 
   const { sensorDAO } = database;
@@ -44,7 +43,6 @@ function getSensor(req, res) {
     if (s === null) {
       res.status(404).json({ message: 'Not found.' });
     } else {
-      console.log(s)
       res.status(200).json(new SensorDTO(
         s.id,
         s.documentationLink,

@@ -48,7 +48,7 @@ class SensorDAO {
       });
     });
   }
-  
+
   /**
     Find a Sensor in the databse.
     @param id {string} - The name of the Sensor
