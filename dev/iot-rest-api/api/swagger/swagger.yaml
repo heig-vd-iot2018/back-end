@@ -47,7 +47,7 @@ paths:
           in: path
           description: The id of the sensors to get
           required: true
-          type: integer
+          type: string
       responses:
         "200":
           description: Success
@@ -168,20 +168,20 @@ definitions:
   Sensor:
     required:
       - id
-      - createdDate
-      - lastUpdated
+      - dateCreated
+      - dateUpdated
       - active
       - refreshInterval
       - encoding
       - values
-      - documentation
+      - documentationLink
 
     properties:
       id:
         type: string
-      createdDate:
+      dateCreated:
         type: string
-      lastUpdated:
+      dateUpdated:
         type: string
       active:
         type: boolean
@@ -193,7 +193,7 @@ definitions:
         type: array
         items:
           type: string
-      documentation:
+      documentationLink:
         type: string
         
   SensorData:

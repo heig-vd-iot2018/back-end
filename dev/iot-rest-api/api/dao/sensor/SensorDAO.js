@@ -48,6 +48,39 @@ class SensorDAO {
       });
     });
   }
+  
+  /**
+    Find a Sensor in the databse.
+    @param id {string} - The name of the Sensor
+    @return {Promise object} - A promise to the Sensor object or null if not found
+  */
+  findOne(id) {
+    const { mongoClient } = this.settings;
+    const { dbName } = this.settings;
+    const url = `mongodb://${this.settings.dbAddress}:${this.settings.dbPort}`;
+
+    return new Promise((resolve, reject) => {
+      mongoClient.connect(url, (err, client) => {
+        if (err !== null) {
+          reject(err);
+        } else {
+          const db = client.db(dbName);
+
+          const collection = db.collection('sensors');
+          // Insert some documents
+          collection.findOne({ id }, (error, message) => {
+            if (error !== null) {
+              reject(error);
+            } else {
+              resolve(message);
+            }
+          });
+
+          client.close();
+        }
+      });
+    });
+  }
 }
 
 module.exports = SensorDAO;
