@@ -59,7 +59,23 @@ https://github.com/heig-vd-iot2018/back-end
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 200 | Success | [ [Node](#node) ] |
+| 200 | Success | [Node](#node) |
+| default | Error | [ErrorResponse](#errorresponse) |
+
+##### ***POST***
+**Description:** Add a node to the DB
+
+**Parameters**
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| node | body | The node to be put in db | Yes | [Node](#node) |
+
+**Responses**
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 201 | Node created | [Node](#node) |
 | default | Error | [ErrorResponse](#errorresponse) |
 
 ### /nodes/{id}
