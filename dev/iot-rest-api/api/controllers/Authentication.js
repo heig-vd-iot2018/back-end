@@ -19,6 +19,10 @@ function signIn(req, res) {
             role: user.role,
           },
           process.env.JWT_SECRET,
+          {
+            audience: req.get('host'), // Each token is issued for a specific resource server
+            expiresIn: 60 * 60 * 24 * 10, // We want the token to expire in 10 days
+          },
           (error, token) => {
             if (error) {
               res.status(500).json(new Error('UNKNOWN_ERROR'));

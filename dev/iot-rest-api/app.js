@@ -23,9 +23,9 @@ const config = {
       // Read the token from header
       if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
         [, token] = req.headers.authorization.split(' ');
-        jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
+        jwt.verify(token, JWT_SECRET, { audience: req.get('host') }, (err, decodedToken) => {
           if (err) {
-            callback(new Error('Invalid token'));
+            callback(new Error('Invalid or expired token'));
           } else {
             // TODO: Check in DB if decodedToken is black listed
 
