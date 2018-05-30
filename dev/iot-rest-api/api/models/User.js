@@ -1,9 +1,8 @@
 class User {
-  constructor(username, password, dateCreated, dateUpdated) {
+  constructor(username, password, role) {
     this.username = username;
     this.password = password;
-    this.dateCreated = dateCreated;
-    this.dateUpdated = dateUpdated;
+    this.role = role;
   }
 }
 
