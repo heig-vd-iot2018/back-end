@@ -2,7 +2,7 @@ require('dotenv').load();
 const SwaggerExpress = require('swagger-express-mw');
 const app = require('express')();
 const jwt = require('jsonwebtoken');
-const { userDAO } = require('./api/dao/database');
+const { userDAO, blacklistedTokenDAO } = require('./api/dao/database');
 const roles = require('./api/helpers/roles');
 
 module.exports = app; // for testing
@@ -27,12 +27,18 @@ const config = {
           if (err) {
             callback(new Error('Invalid or expired token'));
           } else {
-            // TODO: Check in DB if decodedToken is black listed
-
-            // Enhancing request object to add current user decoded token
-            req.custom = {};
-            req.custom.currentUserToken = decodedToken;
-            callback(null);
+            blacklistedTokenDAO.find(token)
+              .then((foundToken) => {
+                if (foundToken) {
+                  callback(new Error('Expired token'));
+                } else {
+                  // Enhancing request object to add current user decoded token
+                  req.custom = {};
+                  req.custom.currentUserToken = decodedToken;
+                  req.custom.currentUserTokenRaw = token;
+                  callback(null);
+                }
+              });
           }
         });
       } else {
@@ -73,7 +79,9 @@ userDAO.create(ADMIN_USERNAME, ADMIN_PASSWORD, roles.ADMIN)
   });
 
 SwaggerExpress.create(config, (err, swaggerExpress) => {
-  if (err) { throw err; }
+  if (err) {
+    throw err;
+  }
 
   // install middleware
   swaggerExpress.register(app);

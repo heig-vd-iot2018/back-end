@@ -58,7 +58,19 @@ paths:
           description: Unauthorized username or password
           schema:
             $ref: "#/definitions/ErrorResponse"
-
+  /logout:
+    x-swagger-router-controller: Authentication
+    post:
+      operationId: signOut
+      description: Sign a user out using the provided token
+      produces:
+        - text/plain
+        - application/json
+      responses:
+        "200":
+          description: Success
+        "401":
+          description: Unauthorized username or password
   /sensors:
     x-swagger-router-controller: Sensor
     get:

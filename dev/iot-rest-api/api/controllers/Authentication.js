@@ -1,4 +1,4 @@
-const { userDAO } = require('../dao/database');
+const { userDAO, blacklistedTokenDAO } = require('../dao/database');
 const jwt = require('jsonwebtoken');
 
 function signIn(req, res) {
@@ -39,6 +39,17 @@ function signIn(req, res) {
     });
 }
 
+function signOut(req, res) {
+  const { currentUserTokenRaw } = req.custom;
+  blacklistedTokenDAO.create(currentUserTokenRaw)
+    .then(() => {
+      res.status(200).send();
+    })
+    .catch((err) => {
+      res.status(500).json({ message: err.toString() });
+    });
+}
+
 module.exports = {
-  signIn,
+  signIn, signOut,
 };
