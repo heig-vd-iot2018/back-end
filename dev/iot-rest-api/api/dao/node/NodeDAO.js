@@ -36,12 +36,43 @@ class NodeDAO {
           const collection = db.collection('nodes');
 
           collection.find().toArray((error, nodes) => {
-            console.log('IN NodeDAO, trying to find all');
-            console.log(nodes);
             if (error !== null) {
               reject(error);
             } else {
               resolve(nodes);
+            }
+          });
+
+          client.close();
+        }
+      });
+    });
+  }
+
+  /**
+    Find a Message in the databse.
+    @param id {integer} - The ID of the Node to get
+    @return {Promise object} - A promise to the Message object or null if not found
+  */
+  findById(id) {
+    const { mongoClient } = this.settings;
+    const { dbName } = this.settings;
+    const url = `mongodb://${this.settings.dbAddress}:${this.settings.dbPort}`;
+
+    return new Promise((resolve, reject) => {
+      mongoClient.connect(url, (err, client) => {
+        if (err !== null) {
+          reject(err);
+        } else {
+          const db = client.db(dbName);
+
+          const collection = db.collection('nodes');
+          // Insert some documents
+          collection.findOne({ id }, (error, message) => {
+            if (error !== null) {
+              reject(error);
+            } else {
+              resolve(message);
             }
           });
 
