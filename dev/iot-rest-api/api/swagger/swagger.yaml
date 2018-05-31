@@ -81,9 +81,7 @@ paths:
         "200":
           description: Success
           schema:
-            type: array
-            items:
-              $ref: "#/definitions/Sensor"
+            $ref: "#/definitions/Sensor"
         default:
           description: Error
           schema:
@@ -100,7 +98,7 @@ paths:
           in: path
           description: The id of the sensors to get
           required: true
-          type: integer
+          type: string
       responses:
         "200":
           description: Success
@@ -235,20 +233,20 @@ definitions:
   Sensor:
     required:
       - id
-      - createdDate
-      - lastUpdated
+      - dateCreated
+      - dateUpdated
       - active
       - refreshInterval
       - encoding
       - values
-      - documentation
+      - documentationLink
 
     properties:
       id:
-        type: integer
-      createdDate:
         type: string
-      lastUpdated:
+      dateCreated:
+        type: string
+      dateUpdated:
         type: string
       active:
         type: boolean
@@ -260,7 +258,7 @@ definitions:
         type: array
         items:
           type: string
-      documentation:
+      documentationLink:
         type: string
         
   SensorData:
