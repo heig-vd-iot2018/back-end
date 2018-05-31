@@ -1,4 +1,4 @@
-const { userDAO } = require('../dao/database');
+const { userDAO, blacklistedTokenDAO } = require('../dao/database');
 const jwt = require('jsonwebtoken');
 
 function signIn(req, res) {
@@ -19,6 +19,10 @@ function signIn(req, res) {
             role: user.role,
           },
           process.env.JWT_SECRET,
+          {
+            audience: req.get('host'), // Each token is issued for a specific resource server
+            expiresIn: 60 * 60 * 24 * 10, // We want the token to expire in 10 days
+          },
           (error, token) => {
             if (error) {
               res.status(500).json(new Error('UNKNOWN_ERROR'));
@@ -35,6 +39,17 @@ function signIn(req, res) {
     });
 }
 
+function signOut(req, res) {
+  const { currentUserTokenRaw } = req.custom;
+  blacklistedTokenDAO.create(currentUserTokenRaw)
+    .then(() => {
+      res.status(200).send();
+    })
+    .catch((err) => {
+      res.status(500).json({ message: err.toString() });
+    });
+}
+
 module.exports = {
-  signIn,
+  signIn, signOut,
 };

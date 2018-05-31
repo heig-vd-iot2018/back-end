@@ -2,7 +2,7 @@ require('dotenv').load();
 const SwaggerExpress = require('swagger-express-mw');
 const app = require('express')();
 const jwt = require('jsonwebtoken');
-const { userDAO } = require('./api/dao/database');
+const { userDAO, blacklistedTokenDAO } = require('./api/dao/database');
 const roles = require('./api/helpers/roles');
 const User = require('./api/models/User');
 
@@ -24,16 +24,22 @@ const config = {
       // Read the token from header
       if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
         [, token] = req.headers.authorization.split(' ');
-        jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
+        jwt.verify(token, JWT_SECRET, { audience: req.get('host') }, (err, decodedToken) => {
           if (err) {
-            callback(new Error('Invalid token'));
+            callback(new Error('Invalid or expired token'));
           } else {
-            // TODO: Check in DB if decodedToken is black listed
-
-            // Enhancing request object to add current user decoded token
-            req.custom = {};
-            req.custom.currentUserToken = decodedToken;
-            callback(null);
+            blacklistedTokenDAO.find(token)
+              .then((foundToken) => {
+                if (foundToken) {
+                  callback(new Error('Expired token'));
+                } else {
+                  // Enhancing request object to add current user decoded token
+                  req.custom = {};
+                  req.custom.currentUserToken = decodedToken;
+                  req.custom.currentUserTokenRaw = token;
+                  callback(null);
+                }
+              });
           }
         });
       } else {
@@ -88,7 +94,9 @@ function createDefaultUser(timeout) {
 createDefaultUser(1000);
 
 SwaggerExpress.create(config, (err, swaggerExpress) => {
-  if (err) { throw err; }
+  if (err) {
+    throw err;
+  }
 
   // install middleware
   swaggerExpress.register(app);

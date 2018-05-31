@@ -1,16 +1,16 @@
 /**
-  DAO instances using the database configuration.
+ DAO instances using the database configuration.
 
-  Exports the DAO objects to use to connect and operate CRUD operations
-  on the database.
-*/
+ Exports the DAO objects to use to connect and operate CRUD operations
+ on the database.
+ */
 
 const dbConfig = require('../../config/database');
 const MessageDAO = require('./message/MessageDAO');
 
 const SensorDAO = require('./sensor/SensorDAO');
 const UserDAO = require('./UserDAO');
-
+const BlacklistedTokenDAO = require('./BlacklistedTokenDAO');
 
 const { MongoClient } = require('mongodb');
 
@@ -30,6 +30,12 @@ const database = {
   }),
 
   userDAO: new UserDAO({
+    dbAddress: dbConfig.address,
+    dbPort: dbConfig.port,
+    dbName: dbConfig.name,
+    mongoClient: MongoClient,
+  }),
+  blacklistedTokenDAO: new BlacklistedTokenDAO({
     dbAddress: dbConfig.address,
     dbPort: dbConfig.port,
     dbName: dbConfig.name,

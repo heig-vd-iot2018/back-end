@@ -110,7 +110,6 @@ Deux principales collections seront stockés dans la base de donnée MongaDB:
     automatiquement.
     * La structure de l'objet est la suivante:
         * `blacklisted_token` - Le token banni.
-        * `date_added` - La date à laquelle l'objet a été ajouté à la blacklist.
 * La collection `Sensors` qui contiendra toutes les descriptions des différents
 capteurs.
     * La structure de l'objet est la suivante:
