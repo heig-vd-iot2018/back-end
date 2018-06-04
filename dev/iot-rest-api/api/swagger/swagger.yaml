@@ -246,7 +246,7 @@ definitions:
         type: array
         items:
           # Only id of sensors
-          type: integer
+          type: string
 
   Sensor:
     required:
