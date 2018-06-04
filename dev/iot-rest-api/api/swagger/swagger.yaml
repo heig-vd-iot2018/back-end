@@ -19,7 +19,58 @@ consumes:
 # format of the responses to the client (Accepts)
 produces:
   - application/json
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+security:
+  - Bearer: [ ]
 paths:
+  /auth:
+    x-swagger-router-controller: Authentication
+    post:
+      operationId: signIn
+      description: Sign a user in using username and password credentials.
+      produces:
+        - text/plain
+        - application/json
+        
+      security: []
+      parameters:
+        - in: body
+          name: credentials
+          description: Credentials object.
+          required: true
+          schema:
+            $ref: '#/definitions/Credentials'
+      
+      responses:
+        "200":
+          description: Authentication successfull.
+          schema: 
+            type: string
+        '400':
+          description: Bad request
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        '401':
+          description: Unauthorized username or password
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /logout:
+    x-swagger-router-controller: Authentication
+    post:
+      operationId: signOut
+      description: Sign a user out using the provided token
+      produces:
+        - text/plain
+        - application/json
+      responses:
+        "200":
+          description: Success
+        "401":
+          description: Unauthorized username or password
   /sensors:
     x-swagger-router-controller: Sensor
     get:
@@ -30,9 +81,7 @@ paths:
         "200":
           description: Success
           schema:
-            type: array
-            items:
-              $ref: "#/definitions/Sensor"
+            $ref: "#/definitions/Sensor"
         default:
           description: Error
           schema:
@@ -49,7 +98,7 @@ paths:
           in: path
           description: The id of the sensors to get
           required: true
-          type: integer
+          type: string
       responses:
         "200":
           description: Success
@@ -159,6 +208,20 @@ paths:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
+  Credentials:
+    required:
+      - username
+      - password
+    
+    properties:
+      username:
+        type: string
+        minLength: 3
+      password:
+        type: string
+        format: password
+        minLength: 8
+
   Node:
     required:
       - id
@@ -188,20 +251,20 @@ definitions:
   Sensor:
     required:
       - id
-      - createdDate
-      - lastUpdated
+      - dateCreated
+      - dateUpdated
       - active
       - refreshInterval
       - encoding
       - values
-      - documentation
+      - documentationLink
 
     properties:
       id:
-        type: integer
-      createdDate:
         type: string
-      lastUpdated:
+      dateCreated:
+        type: string
+      dateUpdated:
         type: string
       active:
         type: boolean
@@ -213,7 +276,7 @@ definitions:
         type: array
         items:
           type: string
-      documentation:
+      documentationLink:
         type: string
         
   SensorData:

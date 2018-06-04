@@ -4,6 +4,36 @@ https://github.com/heig-vd-iot2018/back-end
 
 **Version:** 0.0.1
 
+### Security
+---
+**Bearer**  
+
+|apiKey|*API Key*|
+|---|---|
+|Name|Authorization|
+|In|header|
+
+### /auth
+---
+##### ***POST***
+**Description:** Sign a user in using username and password credentials.
+
+**Parameters**
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| credentials | body | Credentials object. | Yes | [Credentials](#credentials) |
+
+**Responses**
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Authentication successfull. | string |
+| 400 | Bad request | [ErrorResponse](#errorresponse) |
+| 401 | Unauthorized username or password | [ErrorResponse](#errorresponse) |
+
+null
+
 ### /sensors
 ---
 ##### ***GET***
@@ -118,6 +148,13 @@ https://github.com/heig-vd-iot2018/back-end
 ---
 ### Models
 ---
+
+### Credentials  
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| username | string |  | Yes |
+| password | password |  | Yes |
 
 ### Node  
 
