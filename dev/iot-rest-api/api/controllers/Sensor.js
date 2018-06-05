@@ -80,8 +80,17 @@ function patchSensor(req, res) {
   });
 }
 
+function setData(req, res) {
+  const sensorData = req.swagger.params.data.value;
+
+  // TODO: How to treat the data?
+
+  res.status(200).send();
+}
+
 module.exports = {
   getSensors,
   getSensor,
   patchSensor,
+  setData,
 };

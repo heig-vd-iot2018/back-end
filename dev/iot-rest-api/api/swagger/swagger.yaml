@@ -200,8 +200,12 @@ paths:
       description: Allow sensors to post their data
       operationId: setData
       
+      produces:
+        - text/plain
+        - application/json
+      
       parameters:
-        - name: id
+        - name: data
           in: body
           description: The id of the node to set
           required: true
@@ -327,7 +331,7 @@ definitions:
     
     properties:
       id:
-        type: integer
+        type: string
       payload:
         type: string
         
