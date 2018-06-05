@@ -135,9 +135,27 @@ paths:
         "200":
           description: Success
           schema:
-            type: array
-            items:
-              $ref: "#/definitions/Node"
+            $ref: "#/definitions/Node"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Add a node to the DB
+      parameters:
+        - in: body
+          name: node
+          description: The node to be put in db
+          required: true
+          schema:
+            $ref: '#/definitions/Node'
+      operationId: postNode
+      
+      responses:
+        "201":
+          description: Node created
+          schema:
+            $ref: "#/definitions/Node"
         default:
           description: Error
           schema:
@@ -228,7 +246,7 @@ definitions:
         type: array
         items:
           # Only id of sensors
-          type: integer
+          type: string
 
   Sensor:
     required:
