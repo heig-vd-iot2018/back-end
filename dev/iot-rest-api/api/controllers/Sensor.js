@@ -62,18 +62,16 @@ function getSensor(req, res) {
 function patchSensor(req, res) {
   const id = req.swagger.params.id.value;
   const sensor = req.swagger.params.data.value;
-  
+
   const { sensorDAO } = database;
   sensorDAO.updateOne(id, sensor).then((s) => {
-    
     const { result } = s;
 
-    if (result.ok === 1 && result.nModified === 1, result.n === 1) {
+    if (result.ok === 1 && result.nModified === 1 && result.n === 1) {
       res.status(200).send();
-    } else if (result.ok === 1 && result.nModified === 0, result.n === 0) {
+    } else if (result.ok === 1 && result.nModified === 0 && result.n === 0) {
       res.status(404).json({ message: 'Not found.' });
-    }
-    else {
+    } else {
       // TODO: Maybe change the result
       res.status(200).send();
     }

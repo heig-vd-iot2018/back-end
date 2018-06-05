@@ -102,17 +102,19 @@ class SensorDAO {
           const collection = db.collection('sensors');
           // Insert some documents
           collection.updateOne(
-            { "id" : id },
-            { $set: { 
-              "documentationLink": sensor.documentationLink,
-              "dateCreated": sensor.dateCreated,
-              "dateUpdated": sensor.dateUpdated,
-              "active": sensor.active,
-              "refreshInterval": sensor.refreshInterval,
-              "encoding": sensor.encoding,
-              "values": sensor.values,
-            } }, 
-    
+            { id },
+            {
+              $set: {
+                documentationLink: sensor.documentationLink,
+                dateCreated: sensor.dateCreated,
+                dateUpdated: sensor.dateUpdated,
+                active: sensor.active,
+                refreshInterval: sensor.refreshInterval,
+                encoding: sensor.encoding,
+                values: sensor.values,
+              },
+            },
+
             (error, message) => {
               if (error !== null) {
                 reject(error);
