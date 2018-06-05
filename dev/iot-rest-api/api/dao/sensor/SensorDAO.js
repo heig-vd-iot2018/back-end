@@ -81,6 +81,52 @@ class SensorDAO {
       });
     });
   }
+
+  /**
+    Update a Sensor in the databse.
+    @param id {string} - The name of the Sensor to update
+    @return {Promise object} - A promise to the Sensor object or null if not found
+  */
+  updateOne(id, sensor) {
+    const { mongoClient } = this.settings;
+    const { dbName } = this.settings;
+    const url = `mongodb://${this.settings.dbAddress}:${this.settings.dbPort}`;
+
+    return new Promise((resolve, reject) => {
+      mongoClient.connect(url, (err, client) => {
+        if (err !== null) {
+          reject(err);
+        } else {
+          const db = client.db(dbName);
+
+          const collection = db.collection('sensors');
+          // Insert some documents
+          collection.updateOne(
+            { "id" : id },
+            { $set: { 
+              "documentationLink": sensor.documentationLink,
+              "dateCreated": sensor.dateCreated,
+              "dateUpdated": sensor.dateUpdated,
+              "active": sensor.active,
+              "refreshInterval": sensor.refreshInterval,
+              "encoding": sensor.encoding,
+              "values": sensor.values,
+            } }, 
+    
+            (error, message) => {
+              if (error !== null) {
+                reject(error);
+              } else {
+                resolve(message);
+              }
+            }
+          );
+
+          client.close();
+        }
+      });
+    });
+  }
 }
 
 module.exports = SensorDAO;

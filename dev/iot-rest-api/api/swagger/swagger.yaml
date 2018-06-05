@@ -110,13 +110,24 @@ paths:
             $ref: "#/definitions/ErrorResponse"
     patch:
       description: To modifiy a sensors
+      operationId: patchSensor
+      
+      produces:
+        - text/plain
+        - application/json
       
       parameters:
         - name: id
           in: path
           description: The id of the sensors to get
           required: true
-          type: integer
+          type: string
+        - name: data
+          in: body
+          description: The modified data of the sensors
+          required: true
+          schema:
+            $ref: "#/definitions/ModifiedSensor"
       responses:
         200:
           description: OK
@@ -206,6 +217,8 @@ paths:
       
   /swagger:
     x-swagger-pipe: swagger_raw
+
+
 # complex objects have schema definitions
 definitions:
   Credentials:
@@ -262,6 +275,34 @@ definitions:
     properties:
       id:
         type: string
+      dateCreated:
+        type: string
+      dateUpdated:
+        type: string
+      active:
+        type: boolean
+      refreshInterval:
+        type: integer
+      encoding:
+        type: string
+      values:
+        type: array
+        items:
+          type: string
+      documentationLink:
+        type: string
+  
+  ModifiedSensor:
+    required:
+      - dateCreated
+      - dateUpdated
+      - active
+      - refreshInterval
+      - encoding
+      - values
+      - documentationLink
+
+    properties:
       dateCreated:
         type: string
       dateUpdated:
