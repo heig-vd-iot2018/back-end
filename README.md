@@ -110,7 +110,6 @@ Deux principales collections seront stockés dans la base de donnée MongaDB:
     automatiquement.
     * La structure de l'objet est la suivante:
         * `blacklisted_token` - Le token banni.
-        * `date_added` - La date à laquelle l'objet a été ajouté à la blacklist.
 * La collection `Sensors` qui contiendra toutes les descriptions des différents
 capteurs.
     * La structure de l'objet est la suivante:
@@ -138,9 +137,10 @@ Les différents endpoints et leurs définitions sont décrites [ici](https://git
 La définition des endpoints sera régulièrement mise à jour.
 
 ## Déploiement
-[Instruction de déploiement/utilisation]
+Pour le déploiement, une configuration `Docker` a été créé. Les instructions sont disponibles [ici](https://github.com/heig-vd-iot2018/back-end/tree/master/dev).
 
 ## Conclusion
 [Points à améliorer, points en suspens, améliorations futures, ...]
 
 ## Documentation supplémentaire
+Toutes les librairies utilisées pour ce projet sont disponibles dans le [`package.json`](https://github.com/heig-vd-iot2018/back-end/blob/master/dev/iot-rest-api/package.json).

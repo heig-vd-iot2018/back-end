@@ -1,7 +1,6 @@
 class BlacklistedToken {
-  constructor(blacklistedToken, dateAdded) {
+  constructor(blacklistedToken) {
     this.blacklistedToken = blacklistedToken;
-    this.dateAdded = dateAdded;
   }
 }
 

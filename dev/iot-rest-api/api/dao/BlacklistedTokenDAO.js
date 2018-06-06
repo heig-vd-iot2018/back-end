@@ -1,7 +1,6 @@
 const utils = require('../helpers/utils');
-const bcrypt = require('bcrypt'); 
 
-class UserDAO {
+class BlacklistedTokenDAO {
   constructor(settings) {
     utils.assertRequiredProperties(
       settings,
@@ -11,10 +10,11 @@ class UserDAO {
     this.settings = settings;
   }
 
-  create(user) {
+  create(blacklistedToken) {
     const { mongoClient } = this.settings;
     const { dbName } = this.settings;
     const url = `mongodb://${this.settings.dbAddress}:${this.settings.dbPort}`;
+    console.log(blacklistedToken);
 
     return new Promise((resolve, reject) => {
       mongoClient.connect(url, (err, client) => {
@@ -23,14 +23,9 @@ class UserDAO {
         } else {
           const db = client.db(dbName);
 
-          const collection = db.collection('users');
-
-          // Hash password before storing in DB
-          password = bcrypt.hashSync(password,15);
-
-
+          const collection = db.collection('blacklistedtokens');
           // Insert some documents
-          collection.insertOne(user, (error, result) => {
+          collection.insertOne({ blacklistedToken }, (error, result) => {
             if (error !== null) {
               reject(error);
             } else if (result.insertedCount !== 1) {
@@ -46,7 +41,7 @@ class UserDAO {
     });
   }
 
-  findByUsername(username) {
+  find(blacklistedToken) {
     const { mongoClient } = this.settings;
     const { dbName } = this.settings;
     const url = `mongodb://${this.settings.dbAddress}:${this.settings.dbPort}`;
@@ -58,13 +53,13 @@ class UserDAO {
         } else {
           const db = client.db(dbName);
 
-          const collection = db.collection('users');
-          // Insert some documents
-          collection.findOne({ username }, (error, user) => {
+          const collection = db.collection('blacklistedtokens');
+          // fond some documents
+          collection.findOne({ blacklistedToken }, (error, token) => {
             if (error !== null) {
               reject(error);
             } else {
-              resolve(user);
+              resolve(token);
             }
           });
 
@@ -75,4 +70,4 @@ class UserDAO {
   }
 }
 
-module.exports = UserDAO;
+module.exports = BlacklistedTokenDAO;

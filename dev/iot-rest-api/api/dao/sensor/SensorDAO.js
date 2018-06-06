@@ -1,7 +1,13 @@
-const utils = require('../helpers/utils');
-const bcrypt = require('bcrypt'); 
+const utils = require('../../helpers/utils');
 
-class UserDAO {
+/**
+  DAO class for accessing Sensor object.
+*/
+class SensorDAO {
+  /**
+    @constructor
+    @param settings {object} - The settings required to access the database
+  */
   constructor(settings) {
     utils.assertRequiredProperties(
       settings,
@@ -11,7 +17,11 @@ class UserDAO {
     this.settings = settings;
   }
 
-  create(user) {
+  /**
+    Find all Sensor in the databse.
+    @return {Promise object} - A promise to the list of Sensor object or null if not found
+  */
+  findAll() {
     const { mongoClient } = this.settings;
     const { dbName } = this.settings;
     const url = `mongodb://${this.settings.dbAddress}:${this.settings.dbPort}`;
@@ -23,20 +33,13 @@ class UserDAO {
         } else {
           const db = client.db(dbName);
 
-          const collection = db.collection('users');
-
-          // Hash password before storing in DB
-          password = bcrypt.hashSync(password,15);
-
-
+          const collection = db.collection('sensors');
           // Insert some documents
-          collection.insertOne(user, (error, result) => {
+          collection.find().toArray((error, message) => {
             if (error !== null) {
               reject(error);
-            } else if (result.insertedCount !== 1) {
-              reject(error);
             } else {
-              resolve(result.ops[0]);
+              resolve(message);
             }
           });
 
@@ -46,7 +49,12 @@ class UserDAO {
     });
   }
 
-  findByUsername(username) {
+  /**
+    Find a Sensor in the databse.
+    @param id {string} - The name of the Sensor
+    @return {Promise object} - A promise to the Sensor object or null if not found
+  */
+  findOne(id) {
     const { mongoClient } = this.settings;
     const { dbName } = this.settings;
     const url = `mongodb://${this.settings.dbAddress}:${this.settings.dbPort}`;
@@ -58,13 +66,13 @@ class UserDAO {
         } else {
           const db = client.db(dbName);
 
-          const collection = db.collection('users');
+          const collection = db.collection('sensors');
           // Insert some documents
-          collection.findOne({ username }, (error, user) => {
+          collection.findOne({ id }, (error, message) => {
             if (error !== null) {
               reject(error);
             } else {
-              resolve(user);
+              resolve(message);
             }
           });
 
@@ -75,4 +83,4 @@ class UserDAO {
   }
 }
 
-module.exports = UserDAO;
+module.exports = SensorDAO;

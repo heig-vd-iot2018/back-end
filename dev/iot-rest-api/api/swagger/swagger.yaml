@@ -58,7 +58,19 @@ paths:
           description: Unauthorized username or password
           schema:
             $ref: "#/definitions/ErrorResponse"
-
+  /logout:
+    x-swagger-router-controller: Authentication
+    post:
+      operationId: signOut
+      description: Sign a user out using the provided token
+      produces:
+        - text/plain
+        - application/json
+      responses:
+        "200":
+          description: Success
+        "401":
+          description: Unauthorized username or password
   /sensors:
     x-swagger-router-controller: Sensor
     get:
@@ -69,9 +81,7 @@ paths:
         "200":
           description: Success
           schema:
-            type: array
-            items:
-              $ref: "#/definitions/Sensor"
+            $ref: "#/definitions/Sensor"
         default:
           description: Error
           schema:
@@ -88,7 +98,7 @@ paths:
           in: path
           description: The id of the sensors to get
           required: true
-          type: integer
+          type: string
       responses:
         "200":
           description: Success
@@ -125,9 +135,27 @@ paths:
         "200":
           description: Success
           schema:
-            type: array
-            items:
-              $ref: "#/definitions/Node"
+            $ref: "#/definitions/Node"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Add a node to the DB
+      parameters:
+        - in: body
+          name: node
+          description: The node to be put in db
+          required: true
+          schema:
+            $ref: '#/definitions/Node'
+      operationId: postNode
+      
+      responses:
+        "201":
+          description: Node created
+          schema:
+            $ref: "#/definitions/Node"
         default:
           description: Error
           schema:
@@ -218,25 +246,25 @@ definitions:
         type: array
         items:
           # Only id of sensors
-          type: integer
+          type: string
 
   Sensor:
     required:
       - id
-      - createdDate
-      - lastUpdated
+      - dateCreated
+      - dateUpdated
       - active
       - refreshInterval
       - encoding
       - values
-      - documentation
+      - documentationLink
 
     properties:
       id:
-        type: integer
-      createdDate:
         type: string
-      lastUpdated:
+      dateCreated:
+        type: string
+      dateUpdated:
         type: string
       active:
         type: boolean
@@ -248,7 +276,7 @@ definitions:
         type: array
         items:
           type: string
-      documentation:
+      documentationLink:
         type: string
         
   SensorData:
