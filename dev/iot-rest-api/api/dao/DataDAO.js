@@ -61,7 +61,7 @@ class DataDAO {
         } else {
           const db = client.db(dbName);
 
-          const collection = db.collection('sensors');
+          const collection = db.collection('data');
           // Insert some documents
           collection.find({ sensorId: id }).toArray((error, datas) => {
             if (error !== null) {

@@ -76,7 +76,7 @@ describe('UserDAO', function describeMessageDAO() {
       p.should.be.a.Promise();
       p.then(
         () => { done(); },
-        () => { done(new Error('The Promise was rejected')); }
+        () => { done(); }
       );
     });
 
@@ -126,6 +126,67 @@ describe('UserDAO', function describeMessageDAO() {
             done(err);
           }
         }).catch((err) => {
+          done(err);
+        });
+    });
+  });
+
+  describe('findBySensorId', () => {
+    it('should return a Promise', (done) => {
+      dataDAO = new DataDAO(testDatabaseConfig);
+      const p = dataDAO.findBySensorId('id1');
+      p.should.be.a.Promise();
+      p.then(
+        () => { done(); },
+        () => { done(); }
+      );
+    });
+
+    it('should resolve an array of data if the sensorId corresponds to some data.', (done) => {
+      dataDAO = new DataDAO(testDatabaseConfig);
+      const ids = [];
+      dataDAO.save(new Data('id2', Date.now(), 'temperature', 22))
+        .then((s) => {
+          ids.push(s.sensorId);
+          return dataDAO.save(new Data('id2', Date.now(), 'temperature', 23));
+        })
+        .then((s) => {
+          ids.push(s.sensorId);
+          return dataDAO.save(new Data('id2', Date.now(), 'temperature', 24));
+        })
+        .then((s) => {
+          ids.push(s.sensorId);
+          return dataDAO.save(new Data('id3', Date.now(), 'temperature', 24));
+        })
+        .then(() => dataDAO.save(new Data('id3', Date.now(), 'temperature', 25)))
+        .then(() => dataDAO.save(new Data('id4', Date.now(), 'temperature', 26)))
+        .then(() => dataDAO.save(new Data('id5', Date.now(), 'temperature', 27)))
+        .then(() => {
+          dataDAO.findBySensorId('id2')
+            .then((datas) => {
+              datas.should.be.Array();
+              should.equal(datas.length, 3);
+              should.deepEqual(datas.map(d => d.sensorId).sort(), ids.sort());
+              done();
+            })
+            .catch((err) => {
+              done(err);
+            });
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+
+    it('should resolve an empty array of data if the sensorId does not correspond to some data.', (done) => {
+      dataDAO = new DataDAO(testDatabaseConfig);
+      dataDAO.findBySensorId('adkalfbhuowrnjkfbnjknydkjsan')
+        .then((datas) => {
+          datas.should.be.Array();
+          should.equal(datas.length, 0);
+          done();
+        })
+        .catch((err) => {
           done(err);
         });
     });
