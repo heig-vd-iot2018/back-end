@@ -1,4 +1,4 @@
-require('should');
+const should = require('should');
 const server = require('../../../app');
 const MongodbMemoryServer = require('mongodb-memory-server').default;
 const request = require('supertest');
@@ -45,8 +45,9 @@ describe('controllers', () => {
             done(err);
             return;
           }
-          res.text.should.be.String();
-          const token = res.text;
+          should.notEqual(undefined, res.body);
+          res.body.token.should.be.String();
+          const { token } = res.body;
 
           jwt.verify(token, process.env.JWT_SECRET, (error, decodedToken) => {
             if (error) {

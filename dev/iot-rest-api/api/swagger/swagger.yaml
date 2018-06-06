@@ -32,9 +32,6 @@ paths:
     post:
       operationId: signIn
       description: Sign a user in using username and password credentials.
-      produces:
-        - text/plain
-        - application/json
         
       security: []
       parameters:
@@ -49,7 +46,7 @@ paths:
         "200":
           description: Authentication successfull.
           schema: 
-            type: string
+            $ref: "#/definitions/AuthResponse"
         '400':
           description: Bad request
           schema:
@@ -110,13 +107,24 @@ paths:
             $ref: "#/definitions/ErrorResponse"
     patch:
       description: To modifiy a sensors
+      operationId: patchSensor
+      
+      produces:
+        - text/plain
+        - application/json
       
       parameters:
         - name: id
           in: path
           description: The id of the sensors to get
           required: true
-          type: integer
+          type: string
+        - name: data
+          in: body
+          description: The modified data of the sensors
+          required: true
+          schema:
+            $ref: "#/definitions/ModifiedSensor"
       responses:
         200:
           description: OK
@@ -189,8 +197,12 @@ paths:
       description: Allow sensors to post their data
       operationId: setData
       
+      produces:
+        - text/plain
+        - application/json
+      
       parameters:
-        - name: id
+        - name: data
           in: body
           description: The id of the node to set
           required: true
@@ -206,6 +218,8 @@ paths:
       
   /swagger:
     x-swagger-pipe: swagger_raw
+
+
 # complex objects have schema definitions
 definitions:
   Credentials:
@@ -221,6 +235,14 @@ definitions:
         type: string
         format: password
         minLength: 8
+  
+  AuthResponse:
+    required:
+      - token
+    properties:
+      token:
+        type: string
+        description: the JWT
 
   Node:
     required:
@@ -315,6 +337,34 @@ definitions:
           type: string
       documentationLink:
         type: string
+  
+  ModifiedSensor:
+    required:
+      - dateCreated
+      - dateUpdated
+      - active
+      - refreshInterval
+      - encoding
+      - values
+      - documentationLink
+
+    properties:
+      dateCreated:
+        type: string
+      dateUpdated:
+        type: string
+      active:
+        type: boolean
+      refreshInterval:
+        type: integer
+      encoding:
+        type: string
+      values:
+        type: array
+        items:
+          type: string
+      documentationLink:
+        type: string
         
   SensorData:
     required:
@@ -323,7 +373,7 @@ definitions:
     
     properties:
       id:
-        type: integer
+        type: string
       payload:
         type: string
 

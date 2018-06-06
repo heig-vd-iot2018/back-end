@@ -28,11 +28,23 @@ https://github.com/heig-vd-iot2018/back-end
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 200 | Authentication successfull. | string |
+| 200 | Authentication successfull. | [AuthResponse](#authresponse) |
 | 400 | Bad request | [ErrorResponse](#errorresponse) |
 | 401 | Unauthorized username or password | [ErrorResponse](#errorresponse) |
 
 null
+
+### /logout
+---
+##### ***POST***
+**Description:** Sign a user out using the provided token
+
+**Responses**
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+| 401 | Unauthorized username or password |
 
 ### /sensors
 ---
@@ -43,7 +55,7 @@ null
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 200 | Success | [ [Sensor](#sensor) ] |
+| 200 | Success | [Sensor](#sensor) |
 | default | Error | [ErrorResponse](#errorresponse) |
 
 ### /sensors/{id}
@@ -55,7 +67,7 @@ null
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| id | path | The id of the sensors to get | Yes | integer |
+| id | path | The id of the sensors to get | Yes | string |
 
 **Responses**
 
@@ -71,7 +83,8 @@ null
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| id | path | The id of the sensors to get | Yes | integer |
+| id | path | The id of the sensors to get | Yes | string |
+| data | body | The modified data of the sensors | Yes | [ModifiedSensor](#modifiedsensor) |
 
 **Responses**
 
@@ -135,7 +148,7 @@ null
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| id | body | The id of the node to set | Yes | [SensorData](#sensordata) |
+| data | body | The id of the node to set | Yes | [SensorData](#sensordata) |
 
 **Responses**
 
@@ -156,6 +169,12 @@ null
 | username | string |  | Yes |
 | password | password |  | Yes |
 
+### AuthResponse  
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| token | string | the JWT | Yes |
+
 ### Node  
 
 | Name | Type | Description | Required |
@@ -165,26 +184,38 @@ null
 | lastUpdated | string |  | Yes |
 | active | boolean |  | Yes |
 | localisation | string |  | Yes |
-| sensors | [ integer ] |  | Yes |
+| sensors | [ string ] |  | Yes |
 
 ### Sensor  
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| id | integer |  | Yes |
-| createdDate | string |  | Yes |
-| lastUpdated | string |  | Yes |
+| id | string |  | Yes |
+| dateCreated | string |  | Yes |
+| dateUpdated | string |  | Yes |
 | active | boolean |  | Yes |
 | refreshInterval | integer |  | Yes |
 | encoding | string |  | Yes |
 | values | [ string ] |  | Yes |
-| documentation | string |  | Yes |
+| documentationLink | string |  | Yes |
+
+### ModifiedSensor  
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| dateCreated | string |  | Yes |
+| dateUpdated | string |  | Yes |
+| active | boolean |  | Yes |
+| refreshInterval | integer |  | Yes |
+| encoding | string |  | Yes |
+| values | [ string ] |  | Yes |
+| documentationLink | string |  | Yes |
 
 ### SensorData  
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| id | integer |  | Yes |
+| id | string |  | Yes |
 | payload | string |  | Yes |
 
 ### ErrorResponse  
