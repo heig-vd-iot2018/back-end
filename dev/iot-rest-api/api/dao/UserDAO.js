@@ -1,4 +1,5 @@
 const utils = require('../helpers/utils');
+const bcrypt = require('bcrypt'); 
 
 class UserDAO {
   constructor(settings) {
@@ -23,6 +24,11 @@ class UserDAO {
           const db = client.db(dbName);
 
           const collection = db.collection('users');
+
+          // Hash password before storing in DB
+          password = bcrypt.hashSync(password,15);
+
+
           // Insert some documents
           collection.insertOne({ username, password, role }, (error, result) => {
             if (error !== null) {
