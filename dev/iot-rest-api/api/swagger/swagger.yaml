@@ -177,7 +177,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Node"
+            $ref: "#/definitions/NodeDTO"
         default:
           description: Error
           schema:
@@ -250,39 +250,40 @@ definitions:
         items:
           # Only id of sensors
           type: string
-      data:
-        $ref: "#/definitions/NodeData"
   
-  NodeData:
+  NodeDTO:
+    required:
+      - id
+      - createdDate
+      - lastUpdated
+      - active
+      - latitude
+      - longitude
+      - sensors
+      - data
+
     properties:
-      temperature:
+      id:
+        type: integer
+      createdDate:
+        type: string
+      lastUpdated:
+        type: string
+      active:
+        type: boolean
+      latitude:
+        type: string
+      longitude:
+        type: string
+      sensors:
         type: array
         items:
-          $ref: "#/definitions/Value"
-      pressure:        
+          # Only id of sensors
+          type: string
+      data:
         type: array
         items:
-          $ref: "#/definitions/Value"
-      humidity:        
-        type: array
-        items:
-          $ref: "#/definitions/Value"
-      gas_resistance:        
-        type: array
-        items:
-          $ref: "#/definitions/Value"
-      light:        
-        type: array
-        items:
-          $ref: "#/definitions/Value"
-      die_temperature:        
-        type: array
-        items:
-          $ref: "#/definitions/Value"
-      battery_voltage:        
-        type: array
-        items:
-          $ref: "#/definitions/Value"
+          $ref: "#/definitions/Data"
 
   Sensor:
     required:
@@ -326,12 +327,18 @@ definitions:
       payload:
         type: string
 
-  Value:
+  Data:
     required:
+      - sensorID
+      - type
       - date
       - value
     
     properties:
+      sensorID:
+        type: string
+      type:
+        type: string
       date:
         type: string
       value:
