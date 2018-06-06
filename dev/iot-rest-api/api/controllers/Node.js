@@ -50,7 +50,8 @@ function postNode(req, res) {
     req.swagger.params.node.value.createdDate,
     req.swagger.params.node.value.lastUpdated,
     req.swagger.params.node.value.active,
-    req.swagger.params.node.value.localisation,
+    req.swagger.params.node.value.latitude,
+    req.swagger.params.node.value.longitude,
     req.swagger.params.node.value.sensors,
   );
 
