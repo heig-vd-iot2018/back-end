@@ -228,7 +228,8 @@ definitions:
       - createdDate
       - lastUpdated
       - active
-      - localisation
+      - latitude
+      - longitude
       - sensors
 
     properties:
@@ -240,13 +241,48 @@ definitions:
         type: string
       active:
         type: boolean
-      localisation:
+      latitude:
+        type: string
+      longitude:
         type: string
       sensors:
         type: array
         items:
           # Only id of sensors
           type: string
+      data:
+        $ref: "#/definitions/NodeData"
+  
+  NodeData:
+    properties:
+      temperature:
+        type: array
+        items:
+          $ref: "#/definitions/Value"
+      pressure:        
+        type: array
+        items:
+          $ref: "#/definitions/Value"
+      humidity:        
+        type: array
+        items:
+          $ref: "#/definitions/Value"
+      gas_resistance:        
+        type: array
+        items:
+          $ref: "#/definitions/Value"
+      light:        
+        type: array
+        items:
+          $ref: "#/definitions/Value"
+      die_temperature:        
+        type: array
+        items:
+          $ref: "#/definitions/Value"
+      battery_voltage:        
+        type: array
+        items:
+          $ref: "#/definitions/Value"
 
   Sensor:
     required:
@@ -289,6 +325,17 @@ definitions:
         type: integer
       payload:
         type: string
+
+  Value:
+    required:
+      - date
+      - value
+    
+    properties:
+      date:
+        type: string
+      value:
+        type: number
         
   ErrorResponse:
     required:
