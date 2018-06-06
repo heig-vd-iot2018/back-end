@@ -28,7 +28,7 @@ https://github.com/heig-vd-iot2018/back-end
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 200 | Authentication successfull. | string |
+| 200 | Authentication successfull. | [AuthResponse](#authresponse) |
 | 400 | Bad request | [ErrorResponse](#errorresponse) |
 | 401 | Unauthorized username or password | [ErrorResponse](#errorresponse) |
 
@@ -168,6 +168,12 @@ null
 | ---- | ---- | ----------- | -------- |
 | username | string |  | Yes |
 | password | password |  | Yes |
+
+### AuthResponse  
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| token | string | the JWT | Yes |
 
 ### Node  
 
