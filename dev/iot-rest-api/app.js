@@ -52,7 +52,7 @@ const config = {
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME === undefined ? 'admin' : process.env.ADMIN_USERNAME;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD === undefined ? 'admin1234' : process.env.ADMIN_PASSWORD;
 const DEFAULT_USER_USERNAME = process.env.DEFAULT_USER_USERNAME === undefined ? 'user' : process.env.DEFAULT_USER_USERNAME;
-const DEFAULT_USER_PASSWORD = process.env.DEFAULT_USER_PASSWORD === undefined ? 'admin' : process.env.DEFAULT_USER_PASSWORD;
+const DEFAULT_USER_PASSWORD = process.env.DEFAULT_USER_PASSWORD === undefined ? 'user1234' : process.env.DEFAULT_USER_PASSWORD;
 
 const MAX_TIMEOUT = 128000;
 
