@@ -32,12 +32,26 @@ function getNode(req, res) {
   const id = req.swagger.params.id.value;
 
   const { nodeDAO } = database;
+  const { dataDAO } = database;
+
   nodeDAO.findById(id).then((node) => {
-    console.log(node);
     if (node === null) {
       res.status(404).json({ message: 'No node found for that id.' });
     } else {
-      res.status(200).json(node);
+      let sensorsFetched = node.sensors.length;
+
+      node.sensors.forEach((sensorId) => {
+        dataDAO.findBySensorId(sensorId).then((data) => {
+          data.forEach((d) => {
+            node.data.push(d);
+          });
+
+          sensorsFetched += 1;
+          if (sensorsFetched === (node.sensors.length - 1)) {
+            res.status(200).json(node);
+          }
+        });
+      });
     }
   }, (err) => {
     res.status(500).json({ message: `An error occurred: ${err}` });
