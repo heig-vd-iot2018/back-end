@@ -38,18 +38,22 @@ function getNode(req, res) {
     if (node === null) {
       res.status(404).json({ message: 'No node found for that id.' });
     } else {
-      let sensorsFetched = node.sensors.length;
+      let sensorsFetched = 0;
 
       node.sensors.forEach((sensorId) => {
         dataDAO.findBySensorId(sensorId).then((data) => {
+          node.data = [];
+
           data.forEach((d) => {
             node.data.push(d);
           });
 
           sensorsFetched += 1;
-          if (sensorsFetched === (node.sensors.length - 1)) {
+          if (sensorsFetched === node.sensors.length) {
             res.status(200).json(node);
           }
+        }, (err) => {
+          res.status(500).json({ message: `An error occurred: ${err}` });
         });
       });
     }
