@@ -31,6 +31,28 @@ describe('UserDAO', function describeMessageDAO() {
     done();
   });
 
+  beforeEach((done) => {
+    const { mongoClient } = testDatabaseConfig;
+    const url = `mongodb://${testDatabaseConfig.dbAddress}:${testDatabaseConfig.dbPort}`;
+    mongoClient.connect(url, (err, client) => {
+      if (err !== null) {
+        done(err);
+      } else {
+        const db = client.db(testDatabaseConfig.dbName);
+        const collection = db.collection('data');
+        // Insert some documents
+        collection.deleteMany({}, (error) => {
+          if (error !== null) {
+            done(error);
+          } else {
+            done();
+          }
+        });
+        client.close();
+      }
+    });
+  });
+
   after((done) => {
     mongoServer.stop();
     done();
@@ -126,6 +148,80 @@ describe('UserDAO', function describeMessageDAO() {
             done(err);
           }
         }).catch((err) => {
+          done(err);
+        });
+    });
+  });
+
+  describe('saveAll', () => {
+    it('should return a Primise', (done) => {
+      dataDAO = new DataDAO(testDatabaseConfig);
+      const p = dataDAO.saveAll([]);
+      p.should.be.a.Promise();
+      p.then(
+        () => { done(); },
+        () => { done(); }
+      );
+    });
+
+    it('should resolve if the array is empty', (done) => {
+      dataDAO = new DataDAO(testDatabaseConfig);
+      dataDAO.saveAll([])
+        .should.be.fulfilled()
+        .then(() => {
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+
+    it('should resolve an array of created objects if the save was successfull', (done) => {
+      dataDAO = new DataDAO(testDatabaseConfig);
+      const dataToSave = [
+        new Data('id0001', Date.now(), 'temperature', 23.4),
+        new Data('id0001', Date.now(), 'pression', 43),
+        new Data('id0001', Date.now(), 'humidity', 80),
+        new Data('id0001', Date.now(), 'temperature', 25.4),
+      ];
+      dataDAO.saveAll(dataToSave)
+        .then((results) => {
+          console.log(results);
+          should.equal(results.length, dataToSave.length);
+          should.deepEqual(
+            results.map(r => r.sensorId).sort(),
+            dataToSave.map(d => d.sensorId).sort()
+          );
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+
+    it('should save the objects and they should be findable after the save.', (done) => {
+      dataDAO = new DataDAO(testDatabaseConfig);
+      const props = {};
+      const dataToSave = [
+        new Data('id0001', Date.now(), 'temperature', 23.4),
+        new Data('id0001', Date.now(), 'pression', 43),
+        new Data('id0001', Date.now(), 'humidity', 80),
+        new Data('id0002', Date.now(), 'temperature', 25.4),
+      ];
+      dataDAO.saveAll(dataToSave)
+        .then((results) => {
+          props.results = results;
+          return dataDAO.findBySensorId('id0001');
+        })
+        .then((founds) => {
+          should.equal(founds.length, 3);
+          should.deepEqual(
+            founds.map(r => r.sensorId).sort(),
+            props.results.splice(0, 3).map(d => d.sensorId).sort()
+          );
+          done();
+        })
+        .catch((err) => {
           done(err);
         });
     });

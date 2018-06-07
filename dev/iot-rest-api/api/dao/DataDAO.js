@@ -49,6 +49,37 @@ class DataDAO {
     });
   }
 
+  saveAll(datas) {
+    const { mongoClient } = this.settings;
+    const { dbName } = this.settings;
+    const url = `mongodb://${this.settings.dbAddress}:${this.settings.dbPort}`;
+
+    return new Promise((resolve, reject) => {
+      if (datas.length === 0) {
+        resolve([]);
+        return;
+      }
+      mongoClient.connect(url, (err, client) => {
+        if (err !== null) {
+          reject(err);
+        } else {
+          const db = client.db(dbName);
+
+          const collection = db.collection('data');
+          // Insert some documents
+          collection.insertMany(datas, (error, result) => {
+            if (error !== null) {
+              reject(error);
+            } else {
+              resolve(result.ops);
+            }
+          });
+          client.close();
+        }
+      });
+    });
+  }
+
   findBySensorId(id) {
     const { mongoClient } = this.settings;
     const { dbName } = this.settings;
