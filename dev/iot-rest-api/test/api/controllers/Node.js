@@ -17,7 +17,7 @@ let mongoServer;
 let testDatabaseConfig;
 
 function createRandomNode() {
-  const nbOfSensors = parseInt(Math.random() * 5, 10);
+  const nbOfSensors = parseInt(Math.random() * 2 + 1, 10);
   const sensors = [];
   for (let i = 0; i < nbOfSensors; i += 1) {
     sensors.push(uuidv4());
@@ -49,7 +49,7 @@ function createFakeData(sensorsIds) {
 
 function createABunchOfNodes() {
   const nodes = [];
-  for (let i = 0; i < 10000; i += 1) {
+  for (let i = 0; i < 1000; i += 1) {
     nodes.push(createRandomNode());
   }
   return new Promise((resolve, reject) => {
@@ -174,6 +174,10 @@ describe('controllers', () => {
                     GETNodes.should.be.Array();
                     should.notEqual(GETNodes, undefined);
                     should.equal(GETNodes.length, createdNodes.length);
+                    should.deepEqual(
+                      GETNodes.map(n => n.sensorId).sort((a, b) => (a.localeCompare(b))),
+                      createdNodes.map(n => n.sensorId).sort((a, b) => (a.localeCompare(b)))
+                    );
                     done();
                   }
                 });
@@ -185,7 +189,7 @@ describe('controllers', () => {
     });
 
     it('should be possible to retrieve the detail of a node by its id', function test(done) {
-      this.timeout(30000);
+      this.timeout(60000);
       const props = {};
       createABunchOfNodes()
         .then((createdNodes) => {
@@ -204,7 +208,6 @@ describe('controllers', () => {
             .expect(200)
             .end((err, res) => {
               if (err) {
-                console.log(res.body)
                 done(err);
                 return;
               }
@@ -222,12 +225,19 @@ describe('controllers', () => {
                 .expect(200)
                 .end((errGET, resGET) => {
                   if (errGET) {
-                    console.log(resGET.body)
                     done(errGET);
                   } else {
                     const GETNode = resGET.body;
                     should.notEqual(GETNode, undefined);
                     should.equal(GETNode.data.length, createdDatas.length);
+                    should.deepEqual(
+                      GETNode.data.map(d => ({
+                        sensorId: d.sensorId,
+                      })).sort((a, b) => (a.sensorId.localeCompare(b.sensorId))),
+                      createdDatas.map(d => ({
+                        sensorId: d.sensorId,
+                      })).sort((a, b) => (a.sensorId.localeCompare(b.sensorId)))
+                    );
                     done();
                   }
                 });

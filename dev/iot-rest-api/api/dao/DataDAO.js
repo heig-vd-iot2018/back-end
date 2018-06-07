@@ -97,12 +97,12 @@ class DataDAO {
           collection.find({ sensorId: id }).toArray((error, datas) => {
             if (error !== null) {
               reject(error);
+              client.close();
             } else {
               resolve(datas);
+              client.close();
             }
           });
-
-          client.close();
         }
       });
     });

@@ -40,8 +40,8 @@ function getNode(req, res) {
     } else {
       const nodeDTO = {
         id: node.id,
-        createdDate: node.createdDate,
-        lastUpdated: node.lastUpdated,
+        createdDate: new Date(node.createdDate).toISOString(),
+        lastUpdated: new Date(node.lastUpdated).toISOString(),
         active: node.active,
         latitude: node.latitude,
         longitude: node.longitude,
@@ -56,14 +56,13 @@ function getNode(req, res) {
             nodeDTO.data.push(new DataDTO(
               d.sensorId,
               d.type,
-              d.date,
+              new Date(d.date).toISOString(),
               d.value
             ));
           });
 
           sensorsFetched += 1;
           if (sensorsFetched === node.sensors.length) {
-            console.log(nodeDTO)
             res.status(200).json(nodeDTO);
           }
         }, (err) => {
