@@ -180,7 +180,7 @@ paths:
           in: path
           description: The id of the node to get
           required: true
-          type: integer
+          type: string
       responses:
         "200":
           description: Success
@@ -256,7 +256,7 @@ definitions:
 
     properties:
       id:
-        type: integer
+        type: string
       createdDate:
         type: string
       lastUpdated:
@@ -286,7 +286,7 @@ definitions:
 
     properties:
       id:
-        type: integer
+        type: string
       createdDate:
         type: string
       lastUpdated:

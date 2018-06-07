@@ -5,7 +5,9 @@ const request = require('supertest');
 const config = require('../../config/database.js');
 const { MongoClient } = require('mongodb');
 const { userDAO } = require('../../../api/dao/database');
+const { dataDAO } = require('../../../api/dao/database');
 const Node = require('../../../api/models/Node');
+const Data = require('../../../api/models/Data');
 const uuidv4 = require('uuid/v4');
 
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME === undefined ? 'admin' : process.env.ADMIN_USERNAME;
@@ -15,6 +17,12 @@ let mongoServer;
 let testDatabaseConfig;
 
 function createRandomNode() {
+  const nbOfSensors = parseInt(Math.random() * 5, 10);
+  const sensors = [];
+  for (let i = 0; i < nbOfSensors; i += 1) {
+    sensors.push(uuidv4());
+  }
+
   const node = new Node(
     uuidv4(),
     Date.now(),
@@ -22,10 +30,21 @@ function createRandomNode() {
     true,
     'asdf',
     'jkle',
-    []
+    sensors
   );
 
   return node;
+}
+
+function createFakeData(sensorsIds) {
+  const datas = [];
+  for (let i = 0; i < 100; i += 1) {
+    sensorsIds.forEach((id) => {
+      datas.push(new Data(id, Date.now(), 'temperature', parseInt(Math.random() * 30, 10)));
+    });
+  }
+
+  return dataDAO.saveAll(datas);
 }
 
 function createABunchOfNodes() {
@@ -107,7 +126,8 @@ describe('controllers', () => {
             }).then(() => {
               done();
             }).catch((erruser) => {
-              done(erruser);
+              if (erruser.message === 'EXISTING_USER') done();
+              else done(erruser);
             });
           }
         });
@@ -154,6 +174,60 @@ describe('controllers', () => {
                     GETNodes.should.be.Array();
                     should.notEqual(GETNodes, undefined);
                     should.equal(GETNodes.length, createdNodes.length);
+                    done();
+                  }
+                });
+            });
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+
+    it('should be possible to retrieve the detail of a node by its id', function test(done) {
+      this.timeout(30000);
+      const props = {};
+      createABunchOfNodes()
+        .then((createdNodes) => {
+          const choosenOne = createdNodes[parseInt(Math.random() * createdNodes.length, 10)];
+          props.choosenOne = choosenOne;
+          return createFakeData(choosenOne.sensors);
+        })
+        .then((createdDatas) => {
+          const r = request(server);
+          r.post('/auth')
+            .send({
+              username: ADMIN_USERNAME,
+              password: ADMIN_PASSWORD,
+            })
+            .set('Accept', 'application/json')
+            .expect(200)
+            .end((err, res) => {
+              if (err) {
+                console.log(res.body)
+                done(err);
+                return;
+              }
+              const { token } = res.body;
+              try {
+                should.notEqual(token, undefined);
+              } catch (e) {
+                done(e);
+                return;
+              }
+
+              r.get(`/nodes/${props.choosenOne.id}`)
+                .set('Accept', 'application/json')
+                .set('Authorization', `Bearer ${token}`)
+                .expect(200)
+                .end((errGET, resGET) => {
+                  if (errGET) {
+                    console.log(resGET.body)
+                    done(errGET);
+                  } else {
+                    const GETNode = resGET.body;
+                    should.notEqual(GETNode, undefined);
+                    should.equal(GETNode.data.length, createdDatas.length);
                     done();
                   }
                 });

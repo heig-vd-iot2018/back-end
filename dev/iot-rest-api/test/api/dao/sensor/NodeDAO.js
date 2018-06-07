@@ -159,7 +159,7 @@ describe('NodeDAO', function describeSensorDAO() {
         .then((foundNode) => {
           should.equal(foundNode.id, node.id);
           should.equal(foundNode.createdDate, node.createdDate);
-          should.equal(foundNode.updatedDate, node.updatedDate);
+          should.equal(foundNode.lastUpdated, node.lastUpdated);
           should.equal(foundNode.active, node.active);
           should.equal(foundNode.latitude, node.latitude);
           should.equal(foundNode.longitude, node.longitude);

@@ -38,13 +38,22 @@ function getNode(req, res) {
     if (node === null) {
       res.status(404).json({ message: 'No node found for that id.' });
     } else {
+      const nodeDTO = {
+        id: node.id,
+        createdDate: node.createdDate,
+        lastUpdated: node.lastUpdated,
+        active: node.active,
+        latitude: node.latitude,
+        longitude: node.longitude,
+        sensors: node.sensors,
+        data: [],
+      };
       let sensorsFetched = 0;
-      node.data = [];
 
       node.sensors.forEach((sensorId) => {
         dataDAO.findBySensorId(sensorId).then((data) => {
           data.forEach((d) => {
-            node.data.push(new DataDTO(
+            nodeDTO.data.push(new DataDTO(
               d.sensorId,
               d.type,
               d.date,
@@ -54,7 +63,8 @@ function getNode(req, res) {
 
           sensorsFetched += 1;
           if (sensorsFetched === node.sensors.length) {
-            res.status(200).json(node);
+            console.log(nodeDTO)
+            res.status(200).json(nodeDTO);
           }
         }, (err) => {
           res.status(500).json({ message: `An error occurred: ${err}` });
