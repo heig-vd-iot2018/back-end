@@ -1,5 +1,6 @@
 const { userDAO, blacklistedTokenDAO } = require('../dao/database');
 const jwt = require('jsonwebtoken');
+const uuidv4 = require('uuid/v4');
 
 function signIn(req, res) {
   const { username, password } = req.swagger.params.credentials.value;
@@ -17,10 +18,11 @@ function signIn(req, res) {
             id: user.id,
             username: user.username,
             role: user.role,
+            uuid: uuidv4(),
           },
           process.env.JWT_SECRET,
           {
-            audience: req.get('host'), // Each token is issued for a specific resource server
+            audience: req.hostname, // Each token is issued for a specific resource server
             expiresIn: 60 * 60 * 24 * 10, // We want the token to expire in 10 days
           },
           (error, token) => {
