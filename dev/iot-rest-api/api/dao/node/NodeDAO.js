@@ -75,9 +75,9 @@ class NodeDAO {
               resolve(message);
             }
           });
-
-          client.close();
         }
+
+        client.close();
       });
     });
   }
@@ -110,9 +110,9 @@ class NodeDAO {
               resolve(result.ops[0]);
             }
           });
-
-          client.close();
         }
+
+        client.close();
       });
     });
   }
