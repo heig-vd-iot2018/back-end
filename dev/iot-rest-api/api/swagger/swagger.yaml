@@ -379,13 +379,13 @@ definitions:
 
   Data:
     required:
-      - sensorID
+      - sensorId
       - type
       - date
       - value
     
     properties:
-      sensorID:
+      sensorId:
         type: string
       type:
         type: string

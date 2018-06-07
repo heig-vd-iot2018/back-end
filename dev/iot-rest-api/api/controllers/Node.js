@@ -5,7 +5,7 @@
 */
 
 const Node = require('../models/Node');
-// const NodeDTO = require('../dto/message/NodeDTO');
+const DataDTO = require('../dto/DataDTO');
 const database = require('../dao/database');
 
 
@@ -39,17 +39,26 @@ function getNode(req, res) {
       res.status(404).json({ message: 'No node found for that id.' });
     } else {
       let sensorsFetched = 0;
+      node.data = [];
 
       node.sensors.forEach((sensorId) => {
+        console.log('RECHERCHE DES DATAS POUR ' + sensorId);
         dataDAO.findBySensorId(sensorId).then((data) => {
-          node.data = [];
-
+          console.log('DATA TROUVEE');
+          console.log(data);
           data.forEach((d) => {
-            node.data.push(d);
+            node.data.push(new DataDTO(
+              d.sensorId,
+              d.type,
+              d.date,
+              d.value
+            ));
           });
 
           sensorsFetched += 1;
           if (sensorsFetched === node.sensors.length) {
+            console.log('TRAITEMENT FINI, ENVOI DE LA REPONSE')
+            console.log(node);
             res.status(200).json(node);
           }
         }, (err) => {
