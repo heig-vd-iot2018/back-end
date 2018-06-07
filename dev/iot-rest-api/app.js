@@ -72,26 +72,20 @@ function createDefaultUser(timeout) {
       console.log('Default admin created');
       console.log(admin);
 
-      userDAO.create(new User(DEFAULT_USER_USERNAME, DEFAULT_USER_PASSWORD, roles.DEFAULT))
-        .then((user) => {
-          console.log('Default user created');
-          console.log(user);
+      return userDAO.create(new User(DEFAULT_USER_USERNAME, DEFAULT_USER_PASSWORD, roles.DEFAULT));
+    })
+    .then((user) => {
+      console.log('Default user created');
+      console.log(user);
 
-          // For testing purposes
-          app.locals.status = 'up';
-          app.emit('ready');
-        })
-        .catch((err) => {
-          console.log('Error creating default user with role user.');
-          if (timeout >= MAX_TIMEOUT) {
-            console.log(err);
-          } else {
-            setTimeout(() => { createDefaultUser(timeout * 2); }, timeout);
-          }
-        });
+      // For testing purposes
+      app.locals.status = 'up';
+      app.emit('ready');
     })
     .catch((err) => {
-      console.log('Error creating default admin.');
+      console.log('Error creating default users.');
+      console.log('Error message is:');
+      console.log(err.message);
       if (timeout >= MAX_TIMEOUT) {
         console.log(err);
       } else {

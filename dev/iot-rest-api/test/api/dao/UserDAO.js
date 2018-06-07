@@ -35,6 +35,28 @@ describe('UserDAO', function describeMessageDAO() {
     done();
   });
 
+  beforeEach((done) => {
+    const { mongoClient } = testDatabaseConfig;
+    const url = `mongodb://${testDatabaseConfig.dbAddress}:${testDatabaseConfig.dbPort}`;
+    mongoClient.connect(url, (err, client) => {
+      if (err !== null) {
+        done(err);
+      } else {
+        const db = client.db(testDatabaseConfig.dbName);
+        const collection = db.collection('users');
+        // Insert some documents
+        collection.deleteMany({}, (error) => {
+          if (error !== null) {
+            done(error);
+          } else {
+            done();
+          }
+        });
+        client.close();
+      }
+    });
+  });
+
   after((done) => {
     mongoServer.stop();
     done();
@@ -100,12 +122,28 @@ describe('UserDAO', function describeMessageDAO() {
         });
     });
 
-    it('should fulfill the returned Promise if the object was savec in databse', (done) => {
+    it('should reject the Promise if the user already exists in the database', (done) => {
+      userDAO = new UserDAO(testDatabaseConfig);
+      userDAO.create(new User(ADMIN_USERNAME, ADMIN_PASSWORD, roles.ADMIN))
+        .then(() => userDAO.create(new User(ADMIN_USERNAME, ADMIN_PASSWORD, roles.ADMIN)))
+        .should.be.rejected()
+        .then(() => {
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+
+    it('should fulfill the returned Promise if the object was saved in database', (done) => {
       userDAO = new UserDAO(testDatabaseConfig);
       userDAO.create(new User(ADMIN_USERNAME, ADMIN_PASSWORD, roles.ADMIN))
         .should.be.fulfilled()
         .then(() => {
           done();
+        })
+        .catch((err) => {
+          done(err);
         });
     });
   });

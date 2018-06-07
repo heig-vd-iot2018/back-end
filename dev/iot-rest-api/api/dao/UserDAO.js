@@ -21,20 +21,27 @@ class UserDAO {
           reject(err);
         } else {
           const db = client.db(dbName);
-
           const collection = db.collection('users');
-          // Insert some documents
-          collection.insertOne(user, (error, result) => {
-            if (error !== null) {
-              reject(error);
-            } else if (result.insertedCount !== 1) {
-              reject(error);
-            } else {
-              resolve(result.ops[0]);
-            }
-          });
 
-          client.close();
+          collection.findOne({ username: user.username }, (errorFinding, existingUser) => {
+            if (errorFinding !== null) {
+              reject(errorFinding);
+            } else if (existingUser !== null) {
+              reject(new Error('EXISTING_USER'));
+            } else {
+              // Insert some documents
+              collection.insertOne(user, (error, result) => {
+                if (error !== null) {
+                  reject(error);
+                } else if (result.insertedCount !== 1) {
+                  reject(error);
+                } else {
+                  resolve(result.ops[0]);
+                }
+              });
+            }
+            client.close();
+          });
         }
       });
     });
