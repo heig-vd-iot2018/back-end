@@ -6,7 +6,6 @@
  */
 
 const dbConfig = require('../../config/database');
-const MessageDAO = require('./message/MessageDAO');
 
 const NodeDAO = require('./node/NodeDAO');
 const SensorDAO = require('./sensor/SensorDAO');
@@ -17,13 +16,6 @@ const DataDAO = require('./DataDAO');
 const { MongoClient } = require('mongodb');
 
 const database = {
-  messageDAO: new MessageDAO({
-    dbAddress: dbConfig.address,
-    dbPort: dbConfig.port,
-    dbName: dbConfig.name,
-    mongoClient: MongoClient,
-  }),
-
   nodeDAO: new NodeDAO({
     dbAddress: dbConfig.address,
     dbPort: dbConfig.port,
