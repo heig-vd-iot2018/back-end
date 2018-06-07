@@ -17,3 +17,11 @@ services:
       - "4000:10010"
     links:
       - database
+
+  mongo-data:
+    container_name: mongo_data
+    build:
+     context: ./
+     dockerfile: docker_images/mock_data/Dockerfile
+    links:
+      - database
