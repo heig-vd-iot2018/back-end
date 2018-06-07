@@ -38,7 +38,7 @@ describe('controllers', () => {
           username: ADMIN_USERNAME,
           password: ADMIN_PASSWORD,
         })
-        .set('Accept', 'text/html')
+        .set('Accept', 'application/json')
         .expect(200)
         .end((err, res) => {
           if (err !== null) {
@@ -143,6 +143,102 @@ describe('controllers', () => {
         .end((err) => {
           if (err) done(err);
           else done();
+        });
+    });
+  });
+
+  describe('POST /logout', () => {
+    it('should return a 401 if no authentication JWT provided', (done) => {
+      request(server)
+        .post('/logout')
+        .set('Accept', 'application/json')
+        .expect(401)
+        .end((err) => {
+          if (err) done(err);
+          else done();
+        });
+    });
+
+    it('should return a 200 if a valid JWT is provided', (done) => {
+      const r = request.agent(server);
+      r.post('/auth')
+        .send({
+          username: ADMIN_USERNAME,
+          password: ADMIN_PASSWORD,
+        })
+        .set('Accept', 'application/json')
+        .expect(200)
+        .end((err, res) => {
+          if (err) {
+            done(err);
+            return;
+          }
+          const { token } = res.body;
+          try {
+            should.notEqual(token, null);
+          } catch (e) {
+            done(e);
+            return;
+          }
+
+          r.post('/logout')
+            .set('Accept', 'application/json')
+            .set('Content-type', 'application/json')
+            .set('Authorization', `Bearer ${token}`)
+            .expect(200)
+            .end((error) => {
+              if (error) {
+                done(error);
+              } else done();
+            });
+        });
+    });
+
+    it('should return a 401 on a protected endpoint after logout', (done) => {
+      const r = request.agent(server);
+      r.post('/auth')
+        .send({
+          username: ADMIN_USERNAME,
+          password: ADMIN_PASSWORD,
+        })
+        .set('Accept', 'application/json')
+        .expect(200)
+        .end((err, res) => {
+          if (err) {
+            done(err);
+            return;
+          }
+          const { token } = res.body;
+          try {
+            should.notEqual(token, null);
+          } catch (e) {
+            done(e);
+            return;
+          }
+
+          r.post('/logout')
+            .set('Accept', 'application/json')
+            .set('Content-type', 'application/json')
+            .set('Authorization', `Bearer ${token}`)
+            .expect(200)
+            .end((error) => {
+              if (error) {
+                done(error);
+              } else {
+                r.post('/logout')
+                  .set('Accept', 'application/json')
+                  .set('Content-type', 'application/json')
+                  .set('Authorization', `Bearer ${token}`)
+                  .expect(401)
+                  .end((error2) => {
+                    if (error2) {
+                      done(error2);
+                    } else {
+                      done();
+                    }
+                  });
+              }
+            });
         });
     });
   });
