@@ -255,5 +255,20 @@ describe('NodeDAO', function describeSensorDAO() {
           done(err);
         });
     });
+
+    it('should save a Node in the database', (done) => {
+      const node = createRandomNode();
+      nodeDAO = new NodeDAO(testDatabaseConfig);
+      nodeDAO.saveOne(node)
+        .then(() => nodeDAO.findById(node.id))
+        .then((foundNode) => {
+          should.equal(foundNode.id, node.id);
+          should.equal(foundNode.createdAt, node.createdAt);
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
   });
 });
