@@ -4,7 +4,8 @@ const MongodbMemoryServer = require('mongodb-memory-server').default;
 const request = require('supertest');
 const config = require('../../config/database.js');
 const { MongoClient } = require('mongodb');
-const NodeDAO = require('../../../api/dao/node/NodeDAO');
+const { nodeDAO } = require('../../../api/dao/database');
+const { userDAO } = require('../../../api/dao/database');
 const Node = require('../../../api/models/Node');
 const uuidv4 = require('uuid/v4');
 
@@ -30,8 +31,9 @@ function createRandomNode() {
 
 function createABunchOfNodes() {
   const promises = [];
-  const nodeDAO = new NodeDAO(testDatabaseConfig);
-  promises.push(nodeDAO.saveOne(createRandomNode()));
+  for (let i = 0; i < 5; i += 1) {
+    promises.push(nodeDAO.saveOne(createRandomNode()));
+  }
   return Promise.all(promises);
 }
 
@@ -78,7 +80,14 @@ describe('controllers', () => {
           if (error !== null) {
             done(error);
           } else {
-            done();
+            userDAO.create({
+              username: ADMIN_USERNAME,
+              password: ADMIN_PASSWORD,
+            }).then(() => {
+              done();
+            }).catch((erruser) => {
+              done(erruser);
+            });
           }
         });
         client.close();
@@ -90,16 +99,42 @@ describe('controllers', () => {
     it('should retrieve all existing nodes', (done) => {
       createABunchOfNodes()
         .then((createdNodes) => {
-          request(server)
-            .get('/nodes')
+          const r = request(server);
+          r.post('/auth')
+            .send({
+              username: ADMIN_USERNAME,
+              password: ADMIN_PASSWORD,
+            })
             .set('Accept', 'application/json')
             .expect(200)
             .end((err, res) => {
               if (err) {
+                console.log(res.body);
                 done(err);
-              } else {
-                done();
+                return;
               }
+              const { token } = res.body;
+              try {
+                should.notEqual(token, undefined);
+              } catch (e) {
+                done(e);
+                return;
+              }
+
+              r.get('/nodes')
+                .set('Accept', 'application/json')
+                .set('Authorization', `Bearer ${token}`)
+                .expect(200)
+                .end((errGET, resGET) => {
+                  if (errGET) {
+                    done(errGET);
+                  } else {
+                    const GETNodes = resGET.body;
+                    should.notEqual(GETNodes, undefined);
+                    should.equal(GETNodes.length, createdNodes.length);
+                    done();
+                  }
+                });
             });
         })
         .catch((err) => {

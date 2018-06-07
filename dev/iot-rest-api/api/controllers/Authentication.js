@@ -8,7 +8,7 @@ function signIn(req, res) {
   userDAO.findByUsername(username)
     .then((user) => {
       if (user === null) {
-        res.status(401).json({ message: 'Invalid username or password.' });
+        res.status(401).json({ message: 'looool' });
       } else if (user.password !== password) {
         res.status(401).json({ message: 'Invalid username or password.' });
       } else {
