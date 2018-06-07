@@ -32,8 +32,6 @@ paths:
     post:
       operationId: signIn
       description: Sign a user in using username and password credentials.
-      produces:
-        - application/json
         
       security: []
       parameters:
