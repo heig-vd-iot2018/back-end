@@ -14,7 +14,6 @@ class BlacklistedTokenDAO {
     const { mongoClient } = this.settings;
     const { dbName } = this.settings;
     const url = `mongodb://${this.settings.dbAddress}:${this.settings.dbPort}`;
-    console.log(blacklistedToken);
 
     return new Promise((resolve, reject) => {
       mongoClient.connect(url, (err, client) => {

@@ -185,7 +185,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Node"
+            $ref: "#/definitions/NodeDTO"
         default:
           description: Error
           schema:
@@ -250,7 +250,8 @@ definitions:
       - createdDate
       - lastUpdated
       - active
-      - localisation
+      - latitude
+      - longitude
       - sensors
 
     properties:
@@ -262,13 +263,49 @@ definitions:
         type: string
       active:
         type: boolean
-      localisation:
+      latitude:
+        type: string
+      longitude:
         type: string
       sensors:
         type: array
         items:
           # Only id of sensors
           type: string
+  
+  NodeDTO:
+    required:
+      - id
+      - createdDate
+      - lastUpdated
+      - active
+      - latitude
+      - longitude
+      - sensors
+      - data
+
+    properties:
+      id:
+        type: integer
+      createdDate:
+        type: string
+      lastUpdated:
+        type: string
+      active:
+        type: boolean
+      latitude:
+        type: string
+      longitude:
+        type: string
+      sensors:
+        type: array
+        items:
+          # Only id of sensors
+          type: string
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/Data"
 
   Sensor:
     required:
@@ -339,6 +376,23 @@ definitions:
         type: string
       payload:
         type: string
+
+  Data:
+    required:
+      - sensorId
+      - type
+      - date
+      - value
+    
+    properties:
+      sensorId:
+        type: string
+      type:
+        type: string
+      date:
+        type: string
+      value:
+        type: number
         
   ErrorResponse:
     required:

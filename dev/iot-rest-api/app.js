@@ -24,14 +24,20 @@ const config = {
       // Read the token from header
       if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
         [, token] = req.headers.authorization.split(' ');
-        jwt.verify(token, JWT_SECRET, { audience: req.get('host') }, (err, decodedToken) => {
+        jwt.verify(token, JWT_SECRET, { audience: req.hostname }, (err, decodedToken) => {
           if (err) {
-            callback(new Error('Invalid or expired token'));
+            callback({
+              message: 'Invalid or expired token',
+              statusCode: 401,
+            });
           } else {
             blacklistedTokenDAO.find(token)
               .then((foundToken) => {
                 if (foundToken) {
-                  callback(new Error('Expired token'));
+                  callback({
+                    message: 'Expired token',
+                    statusCode: 401,
+                  });
                 } else {
                   // Enhancing request object to add current user decoded token
                   req.custom = {};
@@ -43,7 +49,10 @@ const config = {
           }
         });
       } else {
-        callback(new Error('No auth token found'));
+        callback({
+          message: 'No auth token found',
+          statusCode: 401,
+        });
       }
     },
   },

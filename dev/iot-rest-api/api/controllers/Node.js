@@ -5,7 +5,7 @@
 */
 
 const Node = require('../models/Node');
-// const NodeDTO = require('../dto/message/NodeDTO');
+const DataDTO = require('../dto/DataDTO');
 const database = require('../dao/database');
 
 
@@ -32,12 +32,34 @@ function getNode(req, res) {
   const id = req.swagger.params.id.value;
 
   const { nodeDAO } = database;
+  const { dataDAO } = database;
+
   nodeDAO.findById(id).then((node) => {
-    console.log(node);
     if (node === null) {
       res.status(404).json({ message: 'No node found for that id.' });
     } else {
-      res.status(200).json(node);
+      let sensorsFetched = 0;
+      node.data = [];
+
+      node.sensors.forEach((sensorId) => {
+        dataDAO.findBySensorId(sensorId).then((data) => {
+          data.forEach((d) => {
+            node.data.push(new DataDTO(
+              d.sensorId,
+              d.type,
+              d.date,
+              d.value
+            ));
+          });
+
+          sensorsFetched += 1;
+          if (sensorsFetched === node.sensors.length) {
+            res.status(200).json(node);
+          }
+        }, (err) => {
+          res.status(500).json({ message: `An error occurred: ${err}` });
+        });
+      });
     }
   }, (err) => {
     res.status(500).json({ message: `An error occurred: ${err}` });
@@ -50,7 +72,8 @@ function postNode(req, res) {
     req.swagger.params.node.value.createdDate,
     req.swagger.params.node.value.lastUpdated,
     req.swagger.params.node.value.active,
-    req.swagger.params.node.value.localisation,
+    req.swagger.params.node.value.latitude,
+    req.swagger.params.node.value.longitude,
     req.swagger.params.node.value.sensors,
   );
 
