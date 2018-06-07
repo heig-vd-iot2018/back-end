@@ -24,7 +24,7 @@ function createRandomNode() {
   return node;
 }
 
-describe('SensorDAO', function describeSensorDAO() {
+describe('NodeDAO', function describeSensorDAO() {
   // Here we set the timeout really high to allow to download the libs the first time
   this.timeout(120000);
 
@@ -169,63 +169,91 @@ describe('SensorDAO', function describeSensorDAO() {
           done(err);
         });
     });
+  });
 
-    describe('findAll()', () => {
-      it('should return a Promise', (done) => {
-        nodeDAO = new NodeDAO(testDatabaseConfig);
-        const p = nodeDAO.findAll();
-        p.should.be.a.Promise();
-        p.then(() => {
+  describe('findAll()', () => {
+    it('should return a Promise', (done) => {
+      nodeDAO = new NodeDAO(testDatabaseConfig);
+      const p = nodeDAO.findAll();
+      p.should.be.a.Promise();
+      p.then(() => {
+        done();
+      }).catch(() => {
+        done();
+      });
+    });
+
+    it('should resolve an array of Nodes', (done) => {
+      nodeDAO = new NodeDAO(testDatabaseConfig);
+      nodeDAO.findAll()
+        .then((nodes) => {
+          nodes.should.be.Array();
           done();
+        })
+        .catch((err) => {
+          done(err);
         });
-      });
+    });
 
-      it('should resolve an array of Nodes', (done) => {
-        nodeDAO = new NodeDAO(testDatabaseConfig);
-        nodeDAO.findAll()
-          .then((nodes) => {
-            nodes.should.be.Array();
-            done();
-          })
-          .catch((err) => {
-            done(err);
-          });
-      });
+    it('should resolve all existing Nodes', (done) => {
+      const nodes = [];
 
-      it('should resolve all existing Nodes', (done) => {
-        const nodes = [];
+      nodeDAO = new NodeDAO(testDatabaseConfig);
+      nodeDAO.saveOne(createRandomNode())
+        .then((n) => {
+          nodes.push(n);
+          return nodeDAO.saveOne(createRandomNode());
+        })
+        .then((n) => {
+          nodes.push(n);
+          return nodeDAO.saveOne(createRandomNode());
+        })
+        .then((n) => {
+          nodes.push(n);
+          return nodeDAO.saveOne(createRandomNode());
+        })
+        .then((n) => {
+          nodes.push(n);
+          return nodeDAO.saveOne(createRandomNode());
+        })
+        .then((n) => {
+          nodes.push(n);
+          return nodeDAO.findAll();
+        })
+        .then((foundNodes) => {
+          should.equal(foundNodes.length, nodes.length);
+          foundNodes.map(n => n.id).sort().should.deepEqual(nodes.map(n => n.id).sort());
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+  });
 
-        nodeDAO = new NodeDAO(testDatabaseConfig);
-        nodeDAO.saveOne(createRandomNode())
-          .then((n) => {
-            nodes.push(n);
-            return nodeDAO.saveOne(createRandomNode());
-          })
-          .then((n) => {
-            nodes.push(n);
-            return nodeDAO.saveOne(createRandomNode());
-          })
-          .then((n) => {
-            nodes.push(n);
-            return nodeDAO.saveOne(createRandomNode());
-          })
-          .then((n) => {
-            nodes.push(n);
-            return nodeDAO.saveOne(createRandomNode());
-          })
-          .then((n) => {
-            nodes.push(n);
-            return nodeDAO.findAll();
-          })
-          .then((foundNodes) => {
-            should.equal(foundNodes.length, nodes.length);
-            foundNodes.map(n => n.id).sort().should.deepEqual(nodes.map(n => n.id).sort());
-            done();
-          })
-          .catch((err) => {
-            done(err);
-          });
+  describe('saveOne()', () => {
+    it('should return a Promise', (done) => {
+      nodeDAO = new NodeDAO(testDatabaseConfig);
+      const p = nodeDAO.saveOne(createRandomNode());
+      p.should.be.a.Promise();
+      p.then(() => {
+        done();
+      }).catch(() => {
+        done();
       });
+    });
+
+    it('should resolve the create Node if the Node is saved', (done) => {
+      const node = createRandomNode();
+      nodeDAO = new NodeDAO(testDatabaseConfig);
+      nodeDAO.saveOne(node)
+        .then((createdNode) => {
+          should.equal(createdNode.id, node.id);
+          should.equal(createdNode.createdAt, node.createdAt);
+          done();
+        }).catch((err) => {
+          done(err);
+        });
     });
   });
 });

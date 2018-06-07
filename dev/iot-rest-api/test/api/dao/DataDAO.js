@@ -10,7 +10,7 @@ let mongoServer;
 let testDatabaseConfig;
 let dataDAO;
 
-describe('UserDAO', function describeMessageDAO() {
+describe('DataDAO', function describeMessageDAO() {
   // Here we set the timeout really high to allow to download the libs the first time
   this.timeout(120000);
 
@@ -186,7 +186,6 @@ describe('UserDAO', function describeMessageDAO() {
       ];
       dataDAO.saveAll(dataToSave)
         .then((results) => {
-          console.log(results);
           should.equal(results.length, dataToSave.length);
           should.deepEqual(
             results.map(r => r.sensorId).sort(),
