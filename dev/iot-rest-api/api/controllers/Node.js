@@ -42,10 +42,7 @@ function getNode(req, res) {
       node.data = [];
 
       node.sensors.forEach((sensorId) => {
-        console.log('RECHERCHE DES DATAS POUR ' + sensorId);
         dataDAO.findBySensorId(sensorId).then((data) => {
-          console.log('DATA TROUVEE');
-          console.log(data);
           data.forEach((d) => {
             node.data.push(new DataDTO(
               d.sensorId,
@@ -57,8 +54,6 @@ function getNode(req, res) {
 
           sensorsFetched += 1;
           if (sensorsFetched === node.sensors.length) {
-            console.log('TRAITEMENT FINI, ENVOI DE LA REPONSE')
-            console.log(node);
             res.status(200).json(node);
           }
         }, (err) => {
