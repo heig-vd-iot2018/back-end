@@ -83,29 +83,35 @@ function patchSensor(req, res) {
 
 function setData(req, res) {
   const sensorData = req.swagger.params.data.value;
-  
-  // TODO : Check the length of the header
 
-  // Get the header (Bit field)
+  // Check the length of the payload
+  if(sensorData.payload.length % 4 !== 0)
+    res.status(400).json({ message: "Bad payload format (Length is incorrect)" });
+
+  // Get the header in binary (Bits fields)
   const headers = sensorData.payload.substr(0, 4);
+  const headersInBinary = parseInt(headers, 16).toString(2);
 
-  // Convert to binary
-  const headersInBits = parseInt(headers, 16).toString(2);
-  
+  let datas = [];
   let dataCount = 1;
   
   // Process all the data
-  for(var i = 0; i < headersInBits.length; i++) {
-    const bit = parseInt(headersInBits.charAt(i));
+  for(let i = 0; i < headersInBinary.length; i++) {
+    const bit = parseInt(headersInBinary.charAt(i));
 
-    if(bit === 0) continue;
-  
+    // If the field is not active
+    if(bit === 0) continue;  
+    
+    // Get the specific field
+    const bits = sensorData.payload.substr(dataCount * 4, 4);
+    
+    // If the field not exists
+    if(bits === '') res.status(400).json({ message: "Bad payload format (Headers and fields are not matching)" });
+    
     let header;
     let value;
-  
-    // Get the specific bits
-    const bits = sensorData.payload.substr(dataCount * 4, 4);
 
+    // Map the bit field
     switch(i) {
       case 0:
         header = "temperature";
@@ -134,6 +140,8 @@ function setData(req, res) {
         header = "battery voltage";
         value = parseInt(bits, 16) / 10;
         break;
+      default:
+        res.status(400).json({ message: "Bad payload format (Use of non-used field)" });
     }
 
     dataCount += 1;
@@ -144,16 +152,17 @@ function setData(req, res) {
       header,
       value,
     );
- 
-    const { dataDAO } = database;
- 
-    dataDAO.save(data).then((m) => {
-    }, (err) => {
-      res.status(500).json({ message: err.toString() });
-    });
+    
+    datas.push(data);
   }
+  
+  const { dataDAO } = database;
 
-  res.status(200).send();
+  dataDAO.saveAll(datas).then((m) => {
+    res.status(200).send();
+  }, (err) => {
+    res.status(500).json({ message: err.toString() });
+  });
 }
 
 
