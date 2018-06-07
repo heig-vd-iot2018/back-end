@@ -135,7 +135,7 @@ describe('UserDAO', function describeMessageDAO() {
         });
     });
 
-    it('should fulfill the returned Promise if the object was saved in databse', (done) => {
+    it('should fulfill the returned Promise if the object was saved in database', (done) => {
       userDAO = new UserDAO(testDatabaseConfig);
       userDAO.create(new User(ADMIN_USERNAME, ADMIN_PASSWORD, roles.ADMIN))
         .should.be.fulfilled()
