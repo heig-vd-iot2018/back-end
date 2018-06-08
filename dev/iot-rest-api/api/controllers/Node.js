@@ -6,6 +6,7 @@
 
 const Node = require('../models/Node');
 const DataDTO = require('../dto/DataDTO');
+const NodeDTO = require('../dto/node/NodeWithDataDTO');
 const database = require('../dao/database');
 
 
@@ -17,8 +18,17 @@ function getNodes(req, res) {
     } else {
       const nodesList = [];
 
-      nodes.forEach((n) => {
-        nodesList.push(n);
+      nodes.forEach((node) => {
+        const tmp = new NodeDTO(
+          node.id,
+          node.createdDate,
+          node.lastUpdated,
+          node.active,
+          node.latitude,
+          node.longitude,
+          node.sensors
+        );
+        nodesList.push(tmp);
       });
 
       res.json(nodesList);
