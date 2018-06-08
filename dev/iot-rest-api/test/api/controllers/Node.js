@@ -175,8 +175,8 @@ describe('controllers', () => {
                     should.notEqual(GETNodes, undefined);
                     should.equal(GETNodes.length, createdNodes.length);
                     should.deepEqual(
-                      GETNodes.map(n => n.sensorId).sort((a, b) => (a - b)),
-                      createdNodes.map(n => n.sensorId).sort((a, b) => (a - b))
+                      GETNodes.map(n => n.id).sort((a, b) => (a - b)),
+                      createdNodes.map(n => n.id).sort((a, b) => (a - b))
                     );
                     done();
                   }
@@ -233,10 +233,10 @@ describe('controllers', () => {
                     should.deepEqual(
                       GETNode.data.map(d => ({
                         sensorId: d.sensorId,
-                      })).sort((a, b) => (a - b)),
+                      })).sort((a, b) => (a.sensorId.localeCompare(b.sensorId))),
                       createdDatas.map(d => ({
                         sensorId: d.sensorId,
-                      })).sort((a, b) => (a - b))
+                      })).sort((a, b) => (a.sensorId.localeCompare(b.sensorId)))
                     );
                     done();
                   }
