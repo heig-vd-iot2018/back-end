@@ -16,15 +16,15 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD === undefined ? 'admin1234' : 
 let mongoServer;
 let testDatabaseConfig;
 
-function createRandomNode() {
-  const nbOfSensors = parseInt(Math.random() * 2 + 1, 10);
+function createRandomNode(id) {
+  const nbOfSensors = parseInt((Math.random() * 2) + 1, 10);
   const sensors = [];
   for (let i = 0; i < nbOfSensors; i += 1) {
     sensors.push(uuidv4());
   }
 
   const node = new Node(
-    uuidv4(),
+    id,
     Date.now(),
     Date.now(),
     true,
@@ -50,7 +50,7 @@ function createFakeData(sensorsIds) {
 function createABunchOfNodes() {
   const nodes = [];
   for (let i = 0; i < 1000; i += 1) {
-    nodes.push(createRandomNode());
+    nodes.push(createRandomNode(i));
   }
   return new Promise((resolve, reject) => {
     const { mongoClient } = testDatabaseConfig;
@@ -175,8 +175,8 @@ describe('controllers', () => {
                     should.notEqual(GETNodes, undefined);
                     should.equal(GETNodes.length, createdNodes.length);
                     should.deepEqual(
-                      GETNodes.map(n => n.sensorId).sort((a, b) => (a.localeCompare(b))),
-                      createdNodes.map(n => n.sensorId).sort((a, b) => (a.localeCompare(b)))
+                      GETNodes.map(n => n.sensorId).sort((a, b) => (a - b)),
+                      createdNodes.map(n => n.sensorId).sort((a, b) => (a - b))
                     );
                     done();
                   }
@@ -233,10 +233,10 @@ describe('controllers', () => {
                     should.deepEqual(
                       GETNode.data.map(d => ({
                         sensorId: d.sensorId,
-                      })).sort((a, b) => (a.sensorId.localeCompare(b.sensorId))),
+                      })).sort((a, b) => (a - b)),
                       createdDatas.map(d => ({
                         sensorId: d.sensorId,
-                      })).sort((a, b) => (a.sensorId.localeCompare(b.sensorId)))
+                      })).sort((a, b) => (a - b))
                     );
                     done();
                   }
