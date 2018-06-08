@@ -303,9 +303,7 @@ definitions:
           # Only id of sensors
           type: string
       data:
-        type: array
-        items:
-          $ref: "#/definitions/Data"
+        $ref: "#/definitions/Data"
 
   Sensor:
     required:

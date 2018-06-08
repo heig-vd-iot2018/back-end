@@ -38,12 +38,12 @@ class NodeDAO {
           collection.find().toArray((error, nodes) => {
             if (error !== null) {
               reject(error);
+              client.close();
             } else {
               resolve(nodes);
+              client.close();
             }
           });
-
-          client.close();
         }
       });
     });
@@ -75,9 +75,9 @@ class NodeDAO {
               resolve(message);
             }
           });
-
-          client.close();
         }
+
+        client.close();
       });
     });
   }
@@ -87,7 +87,7 @@ class NodeDAO {
     @param message {Node object} - The Node model to save
     @return {Promise object} - Success or error
   */
-  saveOne(message) {
+  saveOne(node) {
     const { mongoClient } = this.settings;
     const { dbName } = this.settings;
     const url = `mongodb://${this.settings.dbAddress}:${this.settings.dbPort}`;
@@ -101,7 +101,7 @@ class NodeDAO {
 
           const collection = db.collection('nodes');
           // Insert some documents
-          collection.insertOne(message, (error, result) => {
+          collection.insertOne(node, (error, result) => {
             if (error !== null) {
               reject(error);
             } else if (result.insertedCount !== 1) {
@@ -110,9 +110,9 @@ class NodeDAO {
               resolve(result.ops[0]);
             }
           });
-
-          client.close();
         }
+
+        client.close();
       });
     });
   }
