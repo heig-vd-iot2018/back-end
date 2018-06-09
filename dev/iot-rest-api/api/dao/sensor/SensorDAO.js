@@ -34,16 +34,16 @@ class SensorDAO {
           const db = client.db(dbName);
 
           const collection = db.collection('sensors');
-          // Insert some documents
-          collection.find().toArray((error, message) => {
+
+          collection.find().toArray((error, sensors) => {
             if (error !== null) {
               reject(error);
+              client.close();
             } else {
-              resolve(message);
+              resolve(sensors);
+              client.close();
             }
           });
-
-          client.close();
         }
       });
     });
