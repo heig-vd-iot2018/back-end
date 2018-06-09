@@ -180,7 +180,7 @@ paths:
           in: path
           description: The id of the node to get
           required: true
-          type: integer
+          type: string
       responses:
         "200":
           description: Success
@@ -286,7 +286,7 @@ definitions:
 
     properties:
       id:
-        type: integer
+        type: string
       createdDate:
         type: string
       lastUpdated:
@@ -294,9 +294,9 @@ definitions:
       active:
         type: boolean
       latitude:
-        type: string
+        type: number
       longitude:
-        type: string
+        type: number
       sensors:
         type: array
         items:
@@ -312,8 +312,6 @@ definitions:
       - dateUpdated
       - active
       - refreshInterval
-      - encoding
-      - values
       - documentationLink
 
     properties:
@@ -327,12 +325,6 @@ definitions:
         type: boolean
       refreshInterval:
         type: integer
-      encoding:
-        type: string
-      values:
-        type: array
-        items:
-          type: string
       documentationLink:
         type: string
   
@@ -342,8 +334,6 @@ definitions:
       - dateUpdated
       - active
       - refreshInterval
-      - encoding
-      - values
       - documentationLink
 
     properties:
@@ -355,12 +345,6 @@ definitions:
         type: boolean
       refreshInterval:
         type: integer
-      encoding:
-        type: string
-      values:
-        type: array
-        items:
-          type: string
       documentationLink:
         type: string
         

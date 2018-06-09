@@ -5,9 +5,7 @@ class SensorDTO {
     dateCreated,
     dateUpdated,
     active,
-    refreshInterval,
-    encoding,
-    values
+    refreshInterval
   ) {
     this.id = id;
     this.documentationLink = documentationLink;
@@ -15,8 +13,6 @@ class SensorDTO {
     this.dateUpdated = dateUpdated;
     this.active = active;
     this.refreshInterval = refreshInterval;
-    this.encoding = encoding;
-    this.values = values;
   }
 }
 

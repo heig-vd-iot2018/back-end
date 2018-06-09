@@ -51,6 +51,7 @@ function getNode(req, res) {
       let sensorsFetched = 0;
 
       node.sensors.forEach((sensorId) => {
+        
         dataDAO.findBySensorId(sensorId).then((data) => {
           data.forEach((d) => {
             nodeDTO.data.push(new DataDTO(

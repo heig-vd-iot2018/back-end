@@ -110,8 +110,6 @@ class SensorDAO {
                 dateUpdated: sensor.dateUpdated,
                 active: sensor.active,
                 refreshInterval: sensor.refreshInterval,
-                encoding: sensor.encoding,
-                values: sensor.values,
               },
             },
 

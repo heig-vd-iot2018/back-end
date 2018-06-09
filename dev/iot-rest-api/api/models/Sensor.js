@@ -6,8 +6,6 @@ class Sensor {
     dateUpdated,
     active,
     refreshInterval,
-    encoding,
-    values
   ) {
     this.id = id;
     this.documentationLink = documentationLink;
@@ -15,8 +13,6 @@ class Sensor {
     this.dateUpdated = dateUpdated;
     this.active = active;
     this.refreshInterval = refreshInterval;
-    this.encoding = encoding;
-    this.values = values;
   }
 }
 

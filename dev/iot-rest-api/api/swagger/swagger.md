@@ -130,13 +130,13 @@ null
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| id | path | The id of the node to get | Yes | integer |
+| id | path | The id of the node to get | Yes | string |
 
 **Responses**
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 200 | Success | [Node](#node) |
+| 200 | Success | [NodeDTO](#nodedto) |
 | default | Error | [ErrorResponse](#errorresponse) |
 
 ### /sensors/data
@@ -183,8 +183,22 @@ null
 | createdDate | string |  | Yes |
 | lastUpdated | string |  | Yes |
 | active | boolean |  | Yes |
-| localisation | string |  | Yes |
+| latitude | string |  | Yes |
+| longitude | string |  | Yes |
 | sensors | [ string ] |  | Yes |
+
+### NodeDTO  
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| id | string |  | Yes |
+| createdDate | string |  | Yes |
+| lastUpdated | string |  | Yes |
+| active | boolean |  | Yes |
+| latitude | number |  | Yes |
+| longitude | number |  | Yes |
+| sensors | [ string ] |  | Yes |
+| data | [Data](#data) |  | Yes |
 
 ### Sensor  
 
@@ -195,8 +209,6 @@ null
 | dateUpdated | string |  | Yes |
 | active | boolean |  | Yes |
 | refreshInterval | integer |  | Yes |
-| encoding | string |  | Yes |
-| values | [ string ] |  | Yes |
 | documentationLink | string |  | Yes |
 
 ### ModifiedSensor  
@@ -207,8 +219,6 @@ null
 | dateUpdated | string |  | Yes |
 | active | boolean |  | Yes |
 | refreshInterval | integer |  | Yes |
-| encoding | string |  | Yes |
-| values | [ string ] |  | Yes |
 | documentationLink | string |  | Yes |
 
 ### SensorData  
@@ -217,6 +227,15 @@ null
 | ---- | ---- | ----------- | -------- |
 | id | string |  | Yes |
 | payload | string |  | Yes |
+
+### Data  
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| sensorId | string |  | Yes |
+| type | string |  | Yes |
+| date | string |  | Yes |
+| value | number |  | Yes |
 
 ### ErrorResponse  
 

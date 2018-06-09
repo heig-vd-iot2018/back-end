@@ -23,9 +23,7 @@ function getSensors(req, res) {
           s.dateCreated,
           s.dateUpdated,
           s.active,
-          s.refreshInterval,
-          s.encoding,
-          s.values
+          s.refreshInterval
         ));
       });
 
@@ -50,9 +48,7 @@ function getSensor(req, res) {
         s.dateCreated,
         s.dateUpdated,
         s.active,
-        s.refreshInterval,
-        s.encoding,
-        s.values
+        s.refreshInterval
       ));
     }
   }, (err) => {
