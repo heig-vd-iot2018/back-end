@@ -83,6 +83,10 @@ function createDefaultUser(timeout) {
       app.emit('ready');
     })
     .catch((err) => {
+      if (err.message === 'EXISTING_USER') {
+        return;
+      }
+      
       console.log('Error creating default users.');
       console.log('Error message is:');
       console.log(err.message);
