@@ -1,4 +1,6 @@
 const utils = require('../helpers/utils');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 class UserDAO {
   constructor(settings) {
@@ -30,6 +32,8 @@ class UserDAO {
               reject(new Error('EXISTING_USER'));
             } else {
               // Insert some documents
+              user.password = bcrypt.hashSync(user.password, saltRounds);
+
               collection.insertOne(user, (error, result) => {
                 if (error !== null) {
                   reject(error);

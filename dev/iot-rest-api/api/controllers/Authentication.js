@@ -1,6 +1,7 @@
 const { userDAO, blacklistedTokenDAO } = require('../dao/database');
 const jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid/v4');
+const bcrypt = require('bcrypt');
 
 function signIn(req, res) {
   const { username, password } = req.swagger.params.credentials.value;
@@ -9,7 +10,7 @@ function signIn(req, res) {
     .then((user) => {
       if (user === null) {
         res.status(401).json({ message: 'looool' });
-      } else if (user.password !== password) {
+      } else if (!bcrypt.compareSync(password, user.password)) {
         res.status(401).json({ message: 'Invalid username or password.' });
       } else {
         // Sign JWT

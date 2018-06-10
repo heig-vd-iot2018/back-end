@@ -8,6 +8,7 @@
   "license": "",
   "main": "app.js",
   "dependencies": {
+    "bcrypt": "^2.0.1",
     "dotenv": "^5.0.1",
     "express": "^4.12.3",
     "jsonwebtoken": "^8.2.1",
