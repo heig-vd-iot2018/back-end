@@ -11,9 +11,6 @@ fournissent les données en passant par le serveur LoRa de la partie
 fournir au front-end. De plus, le front-end doit être capable de changer
 l'intervalle de rafraîchissement du capteur.
 
-*Note: Il s'agit d'un WIP. Des modifications seront apportées au fur et à mesure
-du projet.*
-
 ## Technologies utilisées
 Les technologies utilisées sont les suivantes:
 
@@ -21,13 +18,12 @@ Les technologies utilisées sont les suivantes:
 * [`Swagger`](https://swagger.io/) - Permet de gérer les endpoints.
 * [`MongoDB`](https://www.mongodb.com/) - Permet de stocker les données de façon
 persistante.
+* [`Docker`](https://www.docker.com/) - Pour gérer le déploiement
 
 ## Spécificités
 Voici l'infrastructure du backend:
 
 ![Infrastructure backend](/img/infra.PNG "Infrastructure backend")
-
-
 
 ### Contraintes
 Le back-end doit mettre à disposition une API permettant à un client de récupérer
