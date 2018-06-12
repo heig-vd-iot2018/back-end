@@ -215,6 +215,35 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
+  /sensors/data/test:
+    x-swagger-router-controller: Sensor
+    post:
+      description: Allow sensors to post their data test
+      operationId: setDataTest
+      
+      produces:
+        - text/plain
+      consumes:
+        - text/plain
+      
+      parameters:
+        - name: data
+          in: body
+          description: The id of the node to set
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          schema: 
+            type: string
+          
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
       
   /swagger:
     x-swagger-pipe: swagger_raw

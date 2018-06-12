@@ -77,6 +77,17 @@ function patchSensor(req, res) {
   });
 }
 
+function setDataTest(req, res) {
+  console.log("On rentre dans le endpoint")
+  const data = req.swagger.params.data.value;
+  
+  console.log("Data: " + data)
+  
+  res.type('text/plain');
+  res.status(200).send(data);
+
+}
+
 function setData(req, res) {
   const sensorData = req.swagger.params.data.value;
 
@@ -171,4 +182,5 @@ module.exports = {
   getSensor,
   patchSensor,
   setData,
+  setDataTest,
 };
