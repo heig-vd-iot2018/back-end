@@ -10,13 +10,13 @@ To run the back-end project in a Docker environment, run the following command:
 docker-compose up --build
 ```
 
-Be careful, this command will also import the example data. To run the project without the example data run the following command:
+Be careful, this command will also import some mocked up data. To run the project without the example data run the following command:
 
 ```
 docker-compose up --build database restapi
 ```
 
-The REST API will be available on the port 4000 on `localhost:4000`
+The REST API will be available on the port 4000 on `localhost:4000`. Available endpoints are described [here](./iot-rest-api/api/swagger/swagger.md).
 
 ## Database
 

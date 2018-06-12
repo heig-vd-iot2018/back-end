@@ -23,6 +23,11 @@ Les technologies utilisées sont les suivantes:
 persistante.
 
 ## Spécificités
+Voici l'infrastructure du backend:
+
+![Infrastructure backend](/img/infra.PNG "Infrastructure backend")
+
+
 
 ### Contraintes
 Le back-end doit mettre à disposition une API permettant à un client de récupérer
@@ -65,13 +70,13 @@ et le JWT généré se trouvera dans le body de la requête.
 Pour accéder à un endpoint protégé, il faudra ajouter le header `Authorization` à vos requêtes avec comme valeur 
 `Bearer <JWT>` où `<JWT>` est à remplacer par le token récupéré à l'étape précédente. 
 
-Si l'utilisateur pour lequel ce JWT a été généré a les droit d'accès (autorisation) au endpoint au question, la requête sera authentifiée et autorisée. Les deux rôles existants sont administrateur ou utilisateur par défaut.
+Si l'utilisateur pour lequel ce JWT a été généré a les droit d'accès (autorisation) au endpoint au question, la requête sera authentifiée et autorisée. Les deux rôles existants sont **administrateur** ou **utilisateur** par défaut.
 
-Pour plus de détail, notamment sur les contraintes de validation du payload, consulter la [spécification de l'API REST](./dev/iot-rest-api/api/swagger/swagger.md). 
+Pour plus de détails, notamment sur les contraintes de validation du payload, consulter la [spécification de l'API REST](./dev/iot-rest-api/api/swagger/swagger.md). 
 
 #### Utilisateurs existants par défaut
 
-Deux utilisateurs existants par défaut sont créés au déploiement de l'API sur un serveur. Par défaut et en mode dévelopement ces utilisateurs sont: 
+Deux utilisateurs existants sont créés par défaut lors du déploiement de l'API sur un serveur. Par défaut et en mode dévelopement ces utilisateurs sont: 
 
 
 | Username  | Password       | Role                   |
@@ -79,7 +84,7 @@ Deux utilisateurs existants par défaut sont créés au déploiement de l'API su
 | user      | user1234       | utilisateur par défaut |
 | admin     | admin1234      | administrateur         |
 
-Attention à ne pas garder ces mots de passes et nom d'utilisateurs lors du deploiement. Se référer à la section déploiement pour plus d'information.
+Attention à ne pas garder ces mots de passes et noms d'utilisateurs lors du deploiement. Se référer à la section déploiement pour plus d'information.
 
 ### Représentations
 Les différents éléments du monde réels sont représentés de la façon suivante:
@@ -91,7 +96,7 @@ communication de LoRa.
 récupérer pour identifier précisement le capteur.
 
 ### Éléments stockés dans la base de données
-Deux principales collections seront stockés dans la base de donnée MongaDB:
+Deux principales collections seront stockés dans la base de donnée MongoDB:
 
 * La collection `Users` qui contiendra les utilisateurs autorisés à accéder à l'API.
     * Dans le cadre de ce projet, chaque utilisateur sera stocké en dur.
@@ -100,47 +105,43 @@ Deux principales collections seront stockés dans la base de donnée MongaDB:
     serveur qui l'autorisera à accéder aux endpoints. Voir le chapitre
     [Authentification](#authentification) pour plus de détails.
     * La structure de l'objet est la suivante:
-        * `id` - identifiant unique 
-        * `username` - Le nom de l'utilisateur.
-        * `password` - Le mot de passe (stocké de façon sécurisée).
+        * `username` - Le nom de l'utilisateur
+        * `password` - Le mot de passe (stocké de façon sécurisée)
         * `role` - le rôle (lié aux droits d'accès de l'utilisateur) [0: utilisateur normal | 1: administrateur]
-* La collection `BlacklistedTokens` qui contiendra les tokens qui ne sont plus autorisés
-à accéder à l'API.
+* La collection `BlacklistedTokens` qui contiendra les tokens qui ne sont plus autorisés à accéder à l'API.
     * Dans le cadre de ce projet, cette collection ne sera pas nettoyée
     automatiquement.
     * La structure de l'objet est la suivante:
         * `blacklisted_token` - Le token banni.
-* La collection `Sensors` qui contiendra toutes les descriptions des différents
-capteurs.
+* La collection `Sensors` qui contiendra toutes les descriptions des différents capteurs.
     * La structure de l'objet est la suivante:
         * `id` - Identifiant unique du capteur (récupéré par le LoRa serveur).
-        * `documentation_link` - Lien vers la documentation officielle du constructeur.
-        * `date_created` - a date à laquelle l'objet a été créé.
-        * `date_updated` - La dernière date de mise à jour de l'objet.
+        * `documentationLink` - Lien vers la documentation officielle du constructeur.
+        * `dateCreated` - a date à laquelle l'objet a été créé.
+        * `dateUpdated` - La dernière date de mise à jour de l'objet.
         * `active` - Permet de savoir si le capteur est encore actif ou s'il a été désactivé.
         * `refresh_interval` - Fréquence à laquelle le capteur doit fournir ses mesures.
-        * `encoding` - L'encodage des données [METTRE LA DOCUMENTATION VERS LE FIRMWARE].
-        * `values` - Tableau d'objets JSON correspond à l'`encoding`.
 * La collection `Nodes` qui contiendra toutes les descriptions des différents
 capteurs situés aux même endroit.
     * La structure de l'objet est la suivante:
         * `id` - Identifiant unique du noeud.
-        * `location` - Localisation du noeud.
-        * `date_created` - a date à laquelle l'objet a été créé.
-        * `date_updated` - La dernière date de mise à jour de l'objet.
+        * `dateCreated` - a date à laquelle l'objet a été créé.
+        * `dateUpdated` - La dernière date de mise à jour de l'objet.
         * `active` - Permet de savoir si le noeud est encore actif ou s'il a été désactivé.
+        * `latitude` - La latitude du noeud.
+        * `longitude` - La longitude du noeud.
         * `sensors` - Tableau d'entiers correspondant aux identifiants des capteurs regroupés dans le noeud.
 
 ### Endpoints
-Les différents endpoints et leurs définitions sont décrites [ici](https://github.com/heig-vd-iot2018/back-end/blob/master/dev/iot-rest-api/api/swagger/swagger.md) et sont générés à l'aide du module NPM [`swagger-markdown`](https://www.npmjs.com/package/swagger-markdown).
+Les différents endpoints et leurs définitions sont décrits [ici](/dev/iot-rest-api/api/swagger/swagger.md) et sont générés à l'aide du module NPM [`swagger-markdown`](https://www.npmjs.com/package/swagger-markdown).
 
 La définition des endpoints sera régulièrement mise à jour.
 
 ## Déploiement
-Pour le déploiement, une configuration `Docker` a été créé. Les instructions sont disponibles [ici](https://github.com/heig-vd-iot2018/back-end/tree/master/dev).
+Pour le déploiement, une configuration `Docker` a été créé. Les instructions sont disponibles [ici](/dev/README.md).
 
 ## Conclusion
-[Points à améliorer, points en suspens, améliorations futures, ...]
+Le backend a réussi à être connecté au frontend. Des données mock-up ont été créées pour permettre au frontend d'afficher des données même si la connection au serveur Lora n'est pas une réussite que nous ne parvenons pas à obtenir des informations en provenance de vrais capteurs.
 
 ## Documentation supplémentaire
-Toutes les librairies utilisées pour ce projet sont disponibles dans le [`package.json`](https://github.com/heig-vd-iot2018/back-end/blob/master/dev/iot-rest-api/package.json).
+Toutes les librairies utilisées pour ce projet sont disponibles dans le [`package.json`](/dev/iot-rest-api/package.json).
