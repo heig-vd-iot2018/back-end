@@ -77,6 +77,14 @@ function patchSensor(req, res) {
   });
 }
 
+function setDataTest(req, res) {
+  const data = req.swagger.params.data.value;
+  
+  res.type('text/plain');
+  res.status(200).send(data);
+
+}
+
 function setData(req, res) {
   const sensorData = req.swagger.params.data.value;
 
@@ -171,4 +179,5 @@ module.exports = {
   getSensor,
   patchSensor,
   setData,
+  setDataTest,
 };
